@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">CapitaineCrepeApplication</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="action_liste">Plats disponibles</string>
+    <string name="action_commande">Commander un plat</string>
+    <string name="action_ajout">Ajouter un plat</string>
+    <string name="action_logout">Quitter</string>
+    <string name="title_activity_liste">ListeActivity</string>
+    <string name="default_value_liste">Pas d\'information</string>
+
+
 </resources>

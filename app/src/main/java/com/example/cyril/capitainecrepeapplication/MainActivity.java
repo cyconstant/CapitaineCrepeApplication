@@ -1,9 +1,11 @@
 package com.example.cyril.capitainecrepeapplication;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,4 +36,16 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void ListeDesPlats(View v) {
+        // on lance ListeActivity
+        Intent intent = new Intent(this, ListeActivity.class);
+        //intent.putExtra(EXTRA_LOGIN, log);
+        startActivity(intent);
+    }
+
+    public void logout(View v) {
+        finish();
+    }
+
 }
