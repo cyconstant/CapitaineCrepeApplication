@@ -3,11 +3,13 @@
 
     <string name="action_settings">Settings</string>
     <string name="action_liste">Plats disponibles</string>
+    <string name="action_quantite">Verifier la quantite</string>
+    <string name="quantite_disponible">Quantite disponible : </string>
     <string name="action_commande">Commander un plat</string>
     <string name="action_ajout">Ajouter un plat</string>
     <string name="action_logout">Quitter</string>
     <string name="title_activity_liste">ListeActivity</string>
     <string name="default_value_liste">Pas d\'information</string>
-
+    <string name="title_activity_quantite">QuantiteActivity</string>
 
 </resources>

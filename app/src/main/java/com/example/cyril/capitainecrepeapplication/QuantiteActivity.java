@@ -1,6 +1,5 @@
 package com.example.cyril.capitainecrepeapplication;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,9 +13,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ListeActivity extends AppCompatActivity {
+public class QuantiteActivity extends AppCompatActivity {
 
-    private TextView textViewListeDesPlats;
+    private TextView textViewQuantite;
     private PrintWriter writer = new PrintWriter(System.out, true);
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
@@ -39,7 +38,7 @@ public class ListeActivity extends AppCompatActivity {
             try {
                 socket = new Socket("10.0.2.2", 7777);
                 writer = new PrintWriter(socket.getOutputStream(), true);
-                writer.println("LISTE");
+                writer.println("QUANTITE");
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 return true;
             } catch (IOException e) {
@@ -92,17 +91,17 @@ public class ListeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_liste);
+        setContentView(R.layout.activity_quantite);
 
-        textViewListeDesPlats = (TextView) findViewById(R.id.textViewListeDesPlats);
+        textViewQuantite = (TextView) findViewById(R.id.textViewQuantite);
         //Intent data = getIntent();
-        System.out.println("ListeActivity.onCreate");
+        System.out.println("QuantiteActivity.onCreate");
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_liste, menu);
+        getMenuInflater().inflate(R.menu.menu_quantite, menu);
         return true;
     }
 
@@ -124,14 +123,14 @@ public class ListeActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        System.out.println("ListeActivity.onStart 1");
+        System.out.println("QuantiteActivity.onStart 1");
         new StartNetwork().execute();
-        System.out.println("ListeActivity.onStart 2");
+        System.out.println("QuantiteActivity.onStart 2");
     }
 
     @Override
     public void finish() {
-        System.out.println("ListeActivity.finish");
+        System.out.println("QuantiteActivity.finish");
         readMessages.cancel(true);
         try {
             socket.close();
@@ -145,7 +144,7 @@ public class ListeActivity extends AppCompatActivity {
         // On ajoute un plat a la liste
         listeDesPlats += message + "\n";
         // On affiche les plats
-        textViewListeDesPlats.setText(listeDesPlats);
+        textViewQuantite.setText(listeDesPlats);
 
     }
 }

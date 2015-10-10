@@ -7,10 +7,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="com.example.cyril.capitainecrepeapplication.ListeActivity">
+    tools:context="com.example.cyril.capitainecrepeapplication.QuantiteActivity">
 
     <TextView
-        android:text="@string/action_liste"
+        android:text="@string/quantite_disponible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -19,6 +19,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:hint="@string/default_value_liste"
-        android:id="@+id/textViewListeDesPlats" />
+        android:id="@+id/textViewQuantite" />
 
 </LinearLayout>

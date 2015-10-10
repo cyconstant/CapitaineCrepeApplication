@@ -37,14 +37,21 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void ListeDesPlats(View v) {
-        // on lance ListeActivity
+    public void listeDesPlats(View v) {
+        // lancer ListeActivity
         Intent intent = new Intent(this, ListeActivity.class);
         //intent.putExtra(EXTRA_LOGIN, log);
         startActivity(intent);
     }
 
+    public void verifierQuantite(View v) {
+        // lancer QuantiteActivity
+        Intent intent = new Intent(this, QuantiteActivity.class);
+        startActivity(intent);
+    }
+
     public void logout(View v) {
+        System.out.println("Logout");
         finish();
     }
 

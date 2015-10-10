@@ -21,7 +21,11 @@
         </activity>
         <activity
             android:name=".ListeActivity"
-            android:label="@string/title_activity_liste"></activity>
+            android:label="@string/title_activity_liste" />
+        <activity
+            android:name=".QuantiteActivity"
+            android:label="@string/title_activity_quantite" />
+
     </application>
 
 </manifest>
