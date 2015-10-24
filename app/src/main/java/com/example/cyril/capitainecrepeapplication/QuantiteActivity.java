@@ -131,11 +131,15 @@ public class QuantiteActivity extends AppCompatActivity {
     @Override
     public void finish() {
         System.out.println("QuantiteActivity.finish");
-        readMessages.cancel(true);
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (readMessages != null) {
+            readMessages.cancel(true);
+        }
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         super.finish();
     }

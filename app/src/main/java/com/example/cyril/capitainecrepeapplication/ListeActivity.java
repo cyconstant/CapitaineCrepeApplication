@@ -132,11 +132,15 @@ public class ListeActivity extends AppCompatActivity {
     @Override
     public void finish() {
         System.out.println("ListeActivity.finish");
-        readMessages.cancel(true);
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (readMessages != null) {
+            readMessages.cancel(true);
+        }
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         super.finish();
     }
