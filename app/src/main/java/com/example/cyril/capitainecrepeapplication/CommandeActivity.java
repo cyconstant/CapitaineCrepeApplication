@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -13,20 +15,21 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ListeActivity extends AppCompatActivity {
+public class CommandeActivity extends AppCompatActivity {
 
-    private TextView textViewListeDesPlats;
-    //private PrintWriter writer = new PrintWriter(System.out, true);
+    private EditText nomDuPlatACommander;
+    private TextView textViewCommande;
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
+    private PrintWriter writer;
     private ReadMessages readMessages;
 
-    private boolean finDeLaListe = false;
-    private String listeDesPlats = "";
+    private boolean finDuMessage = false;
+    private String lePlat = "";
 
     private Socket socket;
 
     private class StartNetwork extends AsyncTask<Void, Void, Boolean> {
+
         @Override
         protected void onPreExecute() {
             System.out.println("StartNetwork.onPreExecute");
@@ -35,11 +38,11 @@ public class ListeActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Void... v) {
             System.out.println("StartNetwork.doInBackground");
-            PrintWriter writer;
+
             try {
                 socket = new Socket("10.0.2.2", 7777);
                 writer = new PrintWriter(socket.getOutputStream(), true);
-                writer.println("LISTE");
+                //writer.println("COMMANDE"+ "crepe au jambon");
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 return true;
             } catch (IOException e) {
@@ -62,12 +65,15 @@ public class ListeActivity extends AppCompatActivity {
     private class ReadMessages extends AsyncTask<Void, String, Void> {
         @Override
         protected Void doInBackground(Void... v) {
-            while (!finDeLaListe) {
-                try {
-                    String message = reader.readLine();
-                    publishProgress(message);
-                } catch (IOException e) {
-                    break;
+            while (!finDuMessage) {
+                if (!lePlat.equals("")) {
+                    writer.println("COMMANDE " + lePlat);
+                    try {
+                        String message = reader.readLine();
+                        publishProgress(message);
+                    } catch (IOException e) {
+                        break;
+                    }
                 }
             }
             return null;
@@ -75,15 +81,19 @@ public class ListeActivity extends AppCompatActivity {
 
         @Override
         protected void onProgressUpdate(String... messages) {
-            int lastMessage = messages.length - 1;
-            for (int i = 0; i < lastMessage; i++) {
-                displayMessage(messages[i] + "\n");
-            }
+            String message = messages[0];
+            if (message != null) {
+                System.out.println("message = " + message);
+                displayMessage(message + "\n");
+                if (message.contains("command")) {
+                    System.out.println("commande OK");
+                    finDuMessage = true;
+                } else if (message.contains("puis"))
 
-            if (messages[lastMessage].equals("FINLISTE")) {
-                finDeLaListe = true;
-            } else {
-                displayMessage(messages[lastMessage]);
+                    System.out.println("commande non OK plat epuise");
+                // pour test
+                finDuMessage = false;
+                lePlat = "";
             }
         }
     }
@@ -92,16 +102,17 @@ public class ListeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_liste);
+        setContentView(R.layout.activity_commande);
 
-        textViewListeDesPlats = (TextView) findViewById(R.id.textViewListeDesPlats);
-        System.out.println("ListeActivity.onCreate");
+        nomDuPlatACommander = (EditText) findViewById(R.id.nomDuPlatACommander);
+        textViewCommande = (TextView) findViewById(R.id.textViewCommande);
+        System.out.println("CommandeActivity.onCreate");
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_liste, menu);
+        getMenuInflater().inflate(R.menu.menu_commande, menu);
         return true;
     }
 
@@ -123,14 +134,12 @@ public class ListeActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        System.out.println("ListeActivity.onStart 1");
         new StartNetwork().execute();
-        System.out.println("ListeActivity.onStart 2");
     }
 
     @Override
     public void finish() {
-        System.out.println("ListeActivity.finish");
+        System.out.println("CommandeActivity.finish");
         if (readMessages != null) {
             readMessages.cancel(true);
         }
@@ -145,10 +154,12 @@ public class ListeActivity extends AppCompatActivity {
     }
 
     private void displayMessage(String message) {
-        // On ajoute un plat a la liste
-        listeDesPlats += message + "\n";
-        // On affiche les plats
-        textViewListeDesPlats.setText(listeDesPlats);
+        // Afficher la reponse du serveur
+        textViewCommande.setText(message);
 
+    }
+
+    public void validerCommande(View v) {
+        lePlat = nomDuPlatACommander.getText().toString();
     }
 }

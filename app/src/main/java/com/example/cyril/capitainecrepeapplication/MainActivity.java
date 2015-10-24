@@ -50,6 +50,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void commanderUnPlat(View v) {
+        // lancer CommandeActivity
+        Intent intent = new Intent(this, CommandeActivity.class);
+        startActivity(intent);
+    }
+
     public void logout(View v) {
         System.out.println("Logout");
         finish();

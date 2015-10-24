@@ -16,7 +16,6 @@ import java.net.Socket;
 public class QuantiteActivity extends AppCompatActivity {
 
     private TextView textViewQuantite;
-    private PrintWriter writer = new PrintWriter(System.out, true);
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     private ReadMessages readMessages;
@@ -35,6 +34,7 @@ public class QuantiteActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Void... v) {
             System.out.println("StartNetwork.doInBackground");
+            PrintWriter writer;
             try {
                 socket = new Socket("10.0.2.2", 7777);
                 writer = new PrintWriter(socket.getOutputStream(), true);
@@ -131,6 +131,7 @@ public class QuantiteActivity extends AppCompatActivity {
     @Override
     public void finish() {
         System.out.println("QuantiteActivity.finish");
+
         if (readMessages != null) {
             readMessages.cancel(true);
         }

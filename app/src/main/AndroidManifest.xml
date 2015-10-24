@@ -25,7 +25,9 @@
         <activity
             android:name=".QuantiteActivity"
             android:label="@string/title_activity_quantite" />
-
+        <activity
+            android:name=".CommandeActivity"
+            android:label="@string/title_activity_commande" />
     </application>
 
 </manifest>

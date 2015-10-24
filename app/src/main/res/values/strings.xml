@@ -11,5 +11,11 @@
     <string name="title_activity_liste">ListeActivity</string>
     <string name="default_value_liste">Pas d\'information</string>
     <string name="title_activity_quantite">QuantiteActivity</string>
+    <string name="title_activity_commande">CommandeActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="commanderUnPlat">Choisissez un plat :</string>
+    <string name="nomDuPlatACommander">entrez le nom ici</string>
+    <string name="valider">Valider</string>
 
 </resources>
