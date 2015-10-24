@@ -1,6 +1,5 @@
 package com.example.cyril.capitainecrepeapplication;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,7 +16,7 @@ import java.net.Socket;
 public class ListeActivity extends AppCompatActivity {
 
     private TextView textViewListeDesPlats;
-    private PrintWriter writer = new PrintWriter(System.out, true);
+    //private PrintWriter writer = new PrintWriter(System.out, true);
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     private ReadMessages readMessages;
@@ -36,6 +35,7 @@ public class ListeActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Void... v) {
             System.out.println("StartNetwork.doInBackground");
+            PrintWriter writer;
             try {
                 socket = new Socket("10.0.2.2", 7777);
                 writer = new PrintWriter(socket.getOutputStream(), true);
