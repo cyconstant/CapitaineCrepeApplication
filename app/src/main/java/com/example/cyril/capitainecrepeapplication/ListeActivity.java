@@ -16,14 +16,10 @@ import java.net.Socket;
 public class ListeActivity extends AppCompatActivity {
 
     private TextView textViewListeDesPlats;
-    //private PrintWriter writer = new PrintWriter(System.out, true);
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
     private ReadMessages readMessages;
-
     private boolean finDeLaListe = false;
     private String listeDesPlats = "";
-
     private Socket socket;
 
     private class StartNetwork extends AsyncTask<Void, Void, Boolean> {

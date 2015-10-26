@@ -22,10 +22,8 @@ public class CommandeActivity extends AppCompatActivity {
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private PrintWriter writer;
     private ReadMessages readMessages;
-
     private boolean finDuMessage = false;
     private String lePlat = "";
-
     private Socket socket;
 
     private class StartNetwork extends AsyncTask<Void, Void, Boolean> {
@@ -42,7 +40,6 @@ public class CommandeActivity extends AppCompatActivity {
             try {
                 socket = new Socket("10.0.2.2", 7777);
                 writer = new PrintWriter(socket.getOutputStream(), true);
-                //writer.println("COMMANDE"+ "crepe au jambon");
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 return true;
             } catch (IOException e) {
@@ -67,8 +64,9 @@ public class CommandeActivity extends AppCompatActivity {
         protected Void doInBackground(Void... v) {
             while (!finDuMessage) {
                 if (!lePlat.equals("")) {
-                    writer.println("COMMANDE " + lePlat);
                     try {
+                        //writer = new PrintWriter(socket.getOutputStream(), true);
+                        writer.println("COMMANDE " + lePlat);
                         String message = reader.readLine();
                         publishProgress(message);
                     } catch (IOException e) {
@@ -88,12 +86,15 @@ public class CommandeActivity extends AppCompatActivity {
                 if (message.contains("command")) {
                     System.out.println("commande OK");
                     finDuMessage = true;
-                } else if (message.contains("puis"))
-
+                } else if (message.contains("puis")) {
                     System.out.println("commande non OK plat epuise");
-                // pour test
-                finDuMessage = false;
-                lePlat = "";
+                    finDuMessage = true;
+                    lePlat = "";
+                } else if (message.contains("inconnu")) {
+                    System.out.println("plat inconnu");
+                    finDuMessage = true;
+                    lePlat = "";
+                }
             }
         }
     }
@@ -140,12 +141,15 @@ public class CommandeActivity extends AppCompatActivity {
     @Override
     public void finish() {
         System.out.println("CommandeActivity.finish");
+        //writer.close();
         if (readMessages != null) {
             readMessages.cancel(true);
+            System.out.println("readMessages.cancel(true)");
         }
         if (socket != null) {
             try {
                 socket.close();
+                System.out.println("socket.close();");
             } catch (IOException e) {
                 e.printStackTrace();
             }
