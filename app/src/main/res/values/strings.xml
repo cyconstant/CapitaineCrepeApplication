@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">CapitaineCrepeApplication</string>
 
+    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="action_liste">Plats disponibles</string>
     <string name="action_quantite">Verifier la quantite</string>
     <string name="quantite_disponible">Quantite disponible : </string>
     <string name="action_commande">Commander un plat</string>
@@ -13,9 +13,13 @@
     <string name="title_activity_quantite">QuantiteActivity</string>
     <string name="title_activity_commande">CommandeActivity</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="commanderUnPlat">Choisissez un plat :</string>
     <string name="nomDuPlatACommander">entrez le nom ici</string>
     <string name="valider">Valider</string>
+    <string name="title_activity_quantite_frag">QuantiteFragActivity</string>
+    <string name="title_activity_quantite_fragment">QuantiteFragmentActivity</string>
+    <string name="ListeDesPlats">Liste des plats :</string>
+    <string name="action_carte">Carte des plats</string>
+    <string name="action_fermer">Fermer</string>
 
 </resources>

@@ -58,7 +58,7 @@ public class ListeActivity extends AppCompatActivity {
     private class ReadMessages extends AsyncTask<Void, String, Void> {
         @Override
         protected Void doInBackground(Void... v) {
-            while (!finDeLaListe) {
+            while (!isCancelled() && !finDeLaListe) {
                 try {
                     String message = reader.readLine();
                     publishProgress(message);
@@ -66,6 +66,7 @@ public class ListeActivity extends AppCompatActivity {
                     break;
                 }
             }
+            System.out.println("ListeActivity.sortie du while \n");
             return null;
         }
 

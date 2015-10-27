@@ -10,7 +10,7 @@
     tools:context="com.example.cyril.capitainecrepeapplication.ListeActivity">
 
     <TextView
-        android:text="@string/action_liste"
+        android:text="@string/ListeDesPlats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
