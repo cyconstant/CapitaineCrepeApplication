@@ -21,16 +21,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ListeActivity"
-            android:label="@string/title_activity_liste" />
-        <activity
-            android:name=".QuantiteActivity"
-            android:label="@string/title_activity_quantite" />
-        <activity
             android:name=".CommandeActivity"
             android:label="@string/title_activity_commande" />
         <activity
             android:name=".ListePlatsFragActivity"
+            android:label="@string/title_activity_frag" />
+        <activity
+            android:name=".QuantiteFragActivity"
             android:label="@string/title_activity_quantite_frag" />
     </application>
 

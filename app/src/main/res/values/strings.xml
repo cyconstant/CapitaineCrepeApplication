@@ -16,10 +16,12 @@
     <string name="commanderUnPlat">Choisissez un plat :</string>
     <string name="nomDuPlatACommander">entrez le nom ici</string>
     <string name="valider">Valider</string>
-    <string name="title_activity_quantite_frag">QuantiteFragActivity</string>
+    <string name="title_activity_frag">FragActivity</string>
     <string name="title_activity_quantite_fragment">QuantiteFragmentActivity</string>
     <string name="ListeDesPlats">Liste des plats :</string>
     <string name="action_carte">Carte des plats</string>
     <string name="action_fermer">Fermer</string>
+    <string name="capitaineCrepes">Capitaine Crepes</string>
+    <string name="title_activity_quantite_frag">QuantiteFragActivity</string>
 
 </resources>

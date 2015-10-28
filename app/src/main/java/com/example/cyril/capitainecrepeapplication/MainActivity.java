@@ -42,24 +42,21 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("MainActivity.finish");
         super.finish();
     }
+
     public void listeDesPlats(View v) {
-
-        //Intent intent = new Intent(this, ListeActivity.class);
         Intent intent = new Intent(this, ListePlatsFragActivity.class);
-
         startActivity(intent);
     }
 
     public void verifierQuantite(View v) {
-        // lancer QuantiteActivity
-        Intent intent = new Intent(this, QuantiteActivity.class);
-        //intent.putExtra(EXTRA_LOGIN, log);
+        Intent intent = new Intent(this, QuantiteFragActivity.class);
         startActivity(intent);
     }
 
     public void commanderUnPlat(View v) {
         // lancer CommandeActivity
         Intent intent = new Intent(this, CommandeActivity.class);
+        //intent.putExtra(EXTRA_LOGIN, log);
         startActivity(intent);
     }
 

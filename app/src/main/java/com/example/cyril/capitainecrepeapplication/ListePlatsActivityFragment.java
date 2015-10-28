@@ -55,9 +55,8 @@ public class ListePlatsActivityFragment extends Fragment {
     public void fermer() {
         super.onDestroyView();
         Activity activity = this.getActivity();
-        System.out.println("Activity.onfinish via Fragment");
+        System.out.println("ListePlatsActivityFragment.fermer()");
         activity.finish();
-
-
     }
+
 }

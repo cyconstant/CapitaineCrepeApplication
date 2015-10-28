@@ -21,7 +21,6 @@ public class ListePlatsFragActivity extends AppCompatActivity {
 
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private ReadMessages readMessages;
-    //private boolean finDeLaListe = false;
     private String listeDesPlats = "";
     private Socket socket;
 
@@ -62,53 +61,30 @@ public class ListePlatsFragActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... v) {
             System.out.println("ReadMessages.doInBackground");
-            String message = "";
+            String message;
             try {
-                while (!message.equals("FINLISTE")) {
-                    message = reader.readLine();
+                while (!((message = reader.readLine()).equals("FINLISTE"))) {
                     listeDesPlats += message + "\n";
-                    System.out.println("message =" + message);
                 }
             } catch (IOException e) {
-                System.out.println("Exception dans ReadMessages");
+                System.out.println("ReadMessages Exception");
                 return null;
             }
             System.out.println("listeDesPlats =" + listeDesPlats);
             return listeDesPlats;
-
         }
-
-        /*@Override
-        protected void onProgressUpdate(String... messages) {
-            int lastMessage = messages.length - 1;
-            for (int i = 0; i < lastMessage; i++) {
-                displayMessage(messages[i] + "\n");
-            }
-
-            if (messages[lastMessage].equals("FINLISTE")) {
-                finDeLaListe = true;
-                System.out.println("finDeLaListe = true\n");
-                this.cancel(true);
-                // System.out.println("this.cancel(true)\n");
-            } else {
-                displayMessage(messages[lastMessage]);
-            }
-        }*/
-
 
         @Override
         protected void onPostExecute(String message) {
             System.out.println("ReadMessages.onPostExecute");
             if (message != null) {
-                displayMessage(message);
+                displayMessage();
             }
         }
 
     }
 
-    private void displayMessage(String message) {
-        // On ajoute un plat a la liste
-        listeDesPlats += message + "\n";
+    private void displayMessage() {
         // On affiche les plats
         frag1.afficherLesPlats(listeDesPlats);
     }

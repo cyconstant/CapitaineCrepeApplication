@@ -1,11 +1,12 @@
 package com.example.cyril.capitainecrepeapplication;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,14 +14,15 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class QuantiteActivity extends AppCompatActivity {
+public class QuantiteFragActivity extends AppCompatActivity {
 
-    private TextView textViewQuantite;
+    private ListePlatsActivityFragment frag1;
+    private FragmentManager fragmentManager;
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private ReadMessages readMessages;
-    private boolean finDeLaListe = false;
     private String listeDesPlats = "";
     private Socket socket;
+
 
     private class StartNetwork extends AsyncTask<Void, Void, Boolean> {
         @Override
@@ -55,44 +57,75 @@ public class QuantiteActivity extends AppCompatActivity {
         }
     }
 
-    private class ReadMessages extends AsyncTask<Void, String, Void> {
+    private class ReadMessages extends AsyncTask<Void, Void, String> {
         @Override
-        protected Void doInBackground(Void... v) {
-            while (!finDeLaListe) {
-                try {
-                    String message = reader.readLine();
-                    publishProgress(message);
-                } catch (IOException e) {
-                    break;
+        protected String doInBackground(Void... v) {
+            System.out.println("ReadMessages.doInBackground");
+            String message;
+            try {
+                while (!((message = reader.readLine()).equals("FINLISTE"))) {
+                    listeDesPlats += message + "\n";
                 }
+            } catch (IOException e) {
+                System.out.println("ReadMessages Exception");
+                return null;
             }
-            return null;
+            System.out.println("listeDesPlats =" + listeDesPlats);
+            return listeDesPlats;
         }
 
         @Override
-        protected void onProgressUpdate(String... messages) {
-            int lastMessage = messages.length - 1;
-            for (int i = 0; i < lastMessage; i++) {
-                displayMessage(messages[i] + "\n");
-            }
-
-            if (messages[lastMessage].equals("FINLISTE")) {
-                finDeLaListe = true;
-            } else {
-                displayMessage(messages[lastMessage]);
+        protected void onPostExecute(String message) {
+            System.out.println("ReadMessages.onPostExecute");
+            if (message != null) {
+                displayMessage();
             }
         }
+
+    }
+
+    private void displayMessage() {
+        // On affiche les plats
+        frag1.afficherLesPlats(listeDesPlats);
     }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quantite);
+        setContentView(R.layout.activity_quantite_frag);
+        // textViewQuantite = (TextView) findViewById(R.id.textViewQuantite);
 
-        textViewQuantite = (TextView) findViewById(R.id.textViewQuantite);
-        //Intent data = getIntent();
-        System.out.println("QuantiteActivity.onCreate");
+        System.out.println("QuantiteFragActivity.onCreate");
+
+        // Initialisation du gestionnaire de fragments
+        fragmentManager = getFragmentManager();
+
+        // On initialise le fragment en le récupérant si il existe déjà
+        // en le créant sinon
+        frag1 = (ListePlatsActivityFragment) fragmentManager.findFragmentById(R.id.layout_fragment);
+        if (frag1 == null) {
+            System.out.println("Creation d'un nouveau fragment");
+            frag1 = new ListePlatsActivityFragment();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.add(R.id.layout_fragment, frag1);
+            transaction.commit();
+        } else {
+            System.out.println("Recup du fragment existant");
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        // On attache le fragment pour conserver les données
+
+        if (!frag1.isAdded()) {
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.add(R.id.layout_fragment, frag1);
+            transaction.commit();
+        }
+        // On appelle la méthode de la super-classe
+        super.onPause();
     }
 
     @Override
@@ -120,14 +153,14 @@ public class QuantiteActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        System.out.println("QuantiteActivity.onStart 1");
+        System.out.println("QuantiteFragActivity.onStart 1");
         new StartNetwork().execute();
-        System.out.println("QuantiteActivity.onStart 2");
+        System.out.println("QuantiteFragActivity.onStart 2");
     }
 
     @Override
     public void finish() {
-        System.out.println("QuantiteActivity.finish");
+        System.out.println("QuantiteFragActivity.finish");
 
         if (readMessages != null) {
             readMessages.cancel(true);
@@ -142,10 +175,4 @@ public class QuantiteActivity extends AppCompatActivity {
         super.finish();
     }
 
-    private void displayMessage(String message) {
-        // On ajoute un plat a la liste
-        listeDesPlats += message + "\n";
-        // On affiche les plats
-        textViewQuantite.setText(listeDesPlats);
-    }
 }
