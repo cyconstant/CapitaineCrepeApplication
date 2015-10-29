@@ -16,7 +16,7 @@ import java.net.Socket;
 
 public class ListePlatsFragActivity extends AppCompatActivity {
 
-    private ListePlatsActivityFragment frag1;
+    private InformationFragment frag1;
     private FragmentManager fragmentManager;
 
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -86,7 +86,7 @@ public class ListePlatsFragActivity extends AppCompatActivity {
 
     private void displayMessage() {
         // On affiche les plats
-        frag1.afficherLesPlats(listeDesPlats);
+        frag1.afficherInformation(listeDesPlats);
     }
 
     @Override
@@ -99,10 +99,10 @@ public class ListePlatsFragActivity extends AppCompatActivity {
 
         // On initialise le fragment en le récupérant si il existe déjà
         // en le créant sinon
-        frag1 = (ListePlatsActivityFragment) fragmentManager.findFragmentById(R.id.layout_fragment);
+        frag1 = (InformationFragment) fragmentManager.findFragmentById(R.id.layout_fragment);
         if (frag1 == null) {
             System.out.println("Creation d'un nouveau fragment");
-            frag1 = new ListePlatsActivityFragment();
+            frag1 = new InformationFragment();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.add(R.id.layout_fragment, frag1);
             transaction.commit();

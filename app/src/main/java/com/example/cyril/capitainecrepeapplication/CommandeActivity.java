@@ -1,13 +1,14 @@
 package com.example.cyril.capitainecrepeapplication;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,12 +18,14 @@ import java.net.Socket;
 
 public class CommandeActivity extends AppCompatActivity {
 
+    private InformationFragment frag1;
+    private FragmentManager fragmentManager;
+
     private EditText nomDuPlatACommander;
-    private TextView textViewCommande;
+
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private PrintWriter writer;
     private ReadMessages readMessages;
-    private boolean finDuMessage = false;
     private String lePlat = "";
     private Socket socket;
 
@@ -59,44 +62,29 @@ public class CommandeActivity extends AppCompatActivity {
         }
     }
 
-    private class ReadMessages extends AsyncTask<Void, String, Void> {
+    private class ReadMessages extends AsyncTask<Void, Void, String> {
         @Override
-        protected Void doInBackground(Void... v) {
-            while (!finDuMessage) {
-                if (!lePlat.equals("")) {
+        protected String doInBackground(Void... v) {
+            String retourServeur = "";
+            if (!lePlat.equals("")) {
                     try {
-                        //writer = new PrintWriter(socket.getOutputStream(), true);
                         writer.println("COMMANDE " + lePlat);
-                        String message = reader.readLine();
-                        publishProgress(message);
+                        retourServeur = reader.readLine();
                     } catch (IOException e) {
-                        break;
+                        return null;
                     }
-                }
             }
-            return null;
+            return retourServeur;
         }
 
         @Override
-        protected void onProgressUpdate(String... messages) {
-            String message = messages[0];
-            if (message != null) {
-                System.out.println("message = " + message);
-                displayMessage(message + "\n");
-                if (message.contains("command")) {
-                    System.out.println("commande OK");
-                    finDuMessage = true;
-                } else if (message.contains("puis")) {
-                    System.out.println("commande non OK plat epuise");
-                    finDuMessage = true;
-                    lePlat = "";
-                } else if (message.contains("inconnu")) {
-                    System.out.println("plat inconnu");
-                    finDuMessage = true;
-                    lePlat = "";
-                }
+        protected void onPostExecute(String retourServeur) {
+            System.out.println("ReadMessages.onPostExecute");
+            if (retourServeur != null) {
+                frag1.afficherInformation(retourServeur);
             }
         }
+
     }
 
 
@@ -105,10 +93,40 @@ public class CommandeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_commande);
 
-        nomDuPlatACommander = (EditText) findViewById(R.id.nomDuPlatACommander);
-        textViewCommande = (TextView) findViewById(R.id.textViewCommande);
         System.out.println("CommandeActivity.onCreate");
+
+        nomDuPlatACommander = (EditText) findViewById(R.id.nomDuPlatACommander);
+
+        // Initialisation du gestionnaire de fragments
+        fragmentManager = getFragmentManager();
+
+        // On initialise le fragment en le récupérant si il existe déjà
+        // en le créant sinon
+        frag1 = (InformationFragment) fragmentManager.findFragmentById(R.id.layout_fragment);
+        if (frag1 == null) {
+            System.out.println("Creation d'un nouveau fragment");
+            frag1 = new InformationFragment();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.add(R.id.layout_fragment, frag1);
+            transaction.commit();
+        } else {
+            System.out.println("Recup du fragment existant");
+        }
     }
+
+    @Override
+    protected void onPause() {
+        // On attache le fragment pour conserver les données
+
+        if (!frag1.isAdded()) {
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.add(R.id.layout_fragment, frag1);
+            transaction.commit();
+        }
+        // On appelle la méthode de la super-classe
+        super.onPause();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -135,13 +153,12 @@ public class CommandeActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        new StartNetwork().execute();
+        //new StartNetwork().execute();
     }
 
     @Override
     public void finish() {
         System.out.println("CommandeActivity.finish");
-        //writer.close();
         if (readMessages != null) {
             readMessages.cancel(true);
             System.out.println("readMessages.cancel(true)");
@@ -157,13 +174,12 @@ public class CommandeActivity extends AppCompatActivity {
         super.finish();
     }
 
-    private void displayMessage(String message) {
-        // Afficher la reponse du serveur
-        textViewCommande.setText(message);
-
-    }
 
     public void validerCommande(View v) {
         lePlat = nomDuPlatACommander.getText().toString();
+        if (!lePlat.equals("")) {
+            new StartNetwork().execute();
+            nomDuPlatACommander.setText("");
+        }
     }
 }

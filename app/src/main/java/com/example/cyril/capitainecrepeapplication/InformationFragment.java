@@ -14,12 +14,12 @@ import android.widget.TextView;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class ListePlatsActivityFragment extends Fragment {
+public class InformationFragment extends Fragment {
 
-    private TextView textViewListeDesPlats;
-    private String listeDesPlats = "";
+    private TextView textViewInformation;
+    private String information = "";
 
-    public ListePlatsActivityFragment() {
+    public InformationFragment() {
     }
 
 
@@ -35,10 +35,10 @@ public class ListePlatsActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.fragment_listeplats, container, false);
-        textViewListeDesPlats = (TextView) v.findViewById(R.id.textViewListeDesPlats);
+        View v = inflater.inflate(R.layout.fragment_information, container, false);
+        textViewInformation = (TextView) v.findViewById(R.id.textViewInformation);
         Button buttonFermer = (Button) v.findViewById(R.id.buttonFermer);
-        afficherLesPlats(listeDesPlats);
+        afficherInformation(information);
         buttonFermer.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 fermer();
@@ -47,15 +47,15 @@ public class ListePlatsActivityFragment extends Fragment {
         return v;
     }
 
-    public void afficherLesPlats(String listeDesPlats) {
-        this.listeDesPlats = listeDesPlats;
-        textViewListeDesPlats.setText(listeDesPlats);
+    public void afficherInformation(String information) {
+        this.information = information;
+        textViewInformation.setText(information);
     }
 
     public void fermer() {
         super.onDestroyView();
         Activity activity = this.getActivity();
-        System.out.println("ListePlatsActivityFragment.fermer()");
+        System.out.println("InformationFragment.fermer()");
         activity.finish();
     }
 
