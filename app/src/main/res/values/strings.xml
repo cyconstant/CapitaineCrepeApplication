@@ -23,5 +23,6 @@
     <string name="action_fermer">Fermer</string>
     <string name="capitaineCrepes">Capitaine Crepes</string>
     <string name="title_activity_quantite_frag">QuantiteFragActivity</string>
+    <string name="image_capitaine">image_capitaine</string>
 
 </resources>

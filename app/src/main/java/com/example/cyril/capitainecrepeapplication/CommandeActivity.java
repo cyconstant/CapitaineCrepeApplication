@@ -83,6 +83,7 @@ public class CommandeActivity extends AppCompatActivity {
             if (retourServeur != null) {
                 frag1.afficherInformation(retourServeur);
             }
+            System.out.println("Status readMessages =" + this.getStatus());
         }
 
     }
