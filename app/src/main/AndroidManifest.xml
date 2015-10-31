@@ -25,9 +25,6 @@
         <activity
             android:name=".ListePlatsFragActivity"
             android:label="@string/title_activity_frag" />
-        <activity
-            android:name=".QuantiteFragActivity"
-            android:label="@string/title_activity_quantite_frag" />
     </application>
 
 </manifest>

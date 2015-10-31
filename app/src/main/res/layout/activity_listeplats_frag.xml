@@ -4,4 +4,4 @@
     android:name="com.example.cyril.capitainecrepeapplication.InformationFragment"
     tools:layout="@layout/fragment_information"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="match_parent" />

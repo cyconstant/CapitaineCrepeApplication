@@ -9,6 +9,8 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
+    public final static String ACTION = "ACTION";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,18 +47,18 @@ public class MainActivity extends AppCompatActivity {
 
     public void listeDesPlats(View v) {
         Intent intent = new Intent(this, ListePlatsFragActivity.class);
+        intent.putExtra(ACTION, "LISTE");
         startActivity(intent);
     }
 
     public void verifierQuantite(View v) {
-        Intent intent = new Intent(this, QuantiteFragActivity.class);
+        Intent intent = new Intent(this, ListePlatsFragActivity.class);
+        intent.putExtra(ACTION, "QUANTITE");
         startActivity(intent);
     }
 
     public void commanderUnPlat(View v) {
-        // lancer CommandeActivity
         Intent intent = new Intent(this, CommandeActivity.class);
-        //intent.putExtra(EXTRA_LOGIN, log);
         startActivity(intent);
     }
 

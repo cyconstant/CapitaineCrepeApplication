@@ -2,6 +2,7 @@ package com.example.cyril.capitainecrepeapplication;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ public class ListePlatsFragActivity extends AppCompatActivity {
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private ReadMessages readMessages;
     private String listeDesPlats = "";
+    private String action = "";
     private Socket socket;
 
     private class StartNetwork extends AsyncTask<Void, Void, Boolean> {
@@ -37,7 +39,8 @@ public class ListePlatsFragActivity extends AppCompatActivity {
             try {
                 socket = new Socket("10.0.2.2", 7777);
                 writer = new PrintWriter(socket.getOutputStream(), true);
-                writer.println("LISTE");
+                //writer.println("LISTE");
+                writer.println(action);
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 return true;
             } catch (IOException e) {
@@ -93,6 +96,10 @@ public class ListePlatsFragActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listeplats_frag);
+
+        System.out.println("ListePlatsFragActivity.onCreate");
+
+
 
         // Initialisation du gestionnaire de fragments
         fragmentManager = getFragmentManager();
@@ -150,6 +157,8 @@ public class ListePlatsFragActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        Intent intent = getIntent();
+        action = intent.getStringExtra(MainActivity.ACTION);
         System.out.println("ListePlatsFragActivity.onStart 1");
         new StartNetwork().execute();
         System.out.println("ListePlatsFragActivity.onStart 2");
