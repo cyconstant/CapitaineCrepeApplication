@@ -62,6 +62,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void ajouterUnPlat(View v) {
+        Intent intent = new Intent(this, CuisineActivity.class);
+        startActivity(intent);
+    }
+
     public void logout(View v) {
         System.out.println("Logout");
         finish();

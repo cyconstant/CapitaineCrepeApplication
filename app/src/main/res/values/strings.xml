@@ -12,9 +12,11 @@
     <string name="default_value_liste">Pas d\'information</string>
     <string name="title_activity_quantite">QuantiteActivity</string>
     <string name="title_activity_commande">CommandeActivity</string>
+    <string name="title_activity_cuisine">CommandeActivity</string>
 
     <string name="commanderUnPlat">Choisissez un plat :</string>
     <string name="nomDuPlatACommander">plat a commander</string>
+    <string name="nomDuPlatAAjouter">Qte et plat a ajouter</string>
     <string name="valider">Valider</string>
     <string name="title_activity_frag">FragActivity</string>
     <string name="title_activity_quantite_fragment">QuantiteFragmentActivity</string>

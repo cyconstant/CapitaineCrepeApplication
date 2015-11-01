@@ -23,6 +23,9 @@
             android:name=".CommandeActivity"
             android:label="@string/title_activity_commande" />
         <activity
+            android:name=".CuisineActivity"
+            android:label="@string/title_activity_cuisine" />
+        <activity
             android:name=".ListePlatsFragActivity"
             android:label="@string/title_activity_frag" />
     </application>
