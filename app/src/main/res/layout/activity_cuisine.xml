@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:id="@+id/nomDuPlatAAjouter"
-        android:hint="@string/nomDuPlatAAjouter" />
+        android:hint="@string/QtenomDuPlatAAjouter" />
 
     <Button
         android:layout_width="wrap_content"
