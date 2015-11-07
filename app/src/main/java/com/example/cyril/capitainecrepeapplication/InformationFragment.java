@@ -22,7 +22,6 @@ public class InformationFragment extends Fragment {
     public InformationFragment() {
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

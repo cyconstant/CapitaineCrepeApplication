@@ -45,14 +45,14 @@ public class MainActivity extends AppCompatActivity {
         super.finish();
     }
 
-    public void listeDesPlats(View v) {
-        Intent intent = new Intent(this, ListePlatsFragActivity.class);
+    /*public void listeDesPlats(View v) {
+        Intent intent = new Intent(this, QuantitePlatsFragActivity.class);
         intent.putExtra(ACTION, "LISTE");
         startActivity(intent);
-    }
+    }*/
 
     public void verifierQuantite(View v) {
-        Intent intent = new Intent(this, ListePlatsFragActivity.class);
+        Intent intent = new Intent(this, QuantitePlatsFragActivity.class);
         intent.putExtra(ACTION, "QUANTITE");
         startActivity(intent);
     }

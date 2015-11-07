@@ -15,7 +15,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ListePlatsFragActivity extends AppCompatActivity {
+public class QuantitePlatsFragActivity extends AppCompatActivity {
 
     private InformationFragment frag1;
     private FragmentManager fragmentManager;
@@ -95,23 +95,21 @@ public class ListePlatsFragActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_listeplats_frag);
+        setContentView(R.layout.activity_quantite_frag);
 
-        System.out.println("ListePlatsFragActivity.onCreate");
-
-
+        System.out.println("QuantitePlatsFragActivity.onCreate");
 
         // Initialisation du gestionnaire de fragments
         fragmentManager = getFragmentManager();
 
         // On initialise le fragment en le récupérant si il existe déjà
         // en le créant sinon
-        frag1 = (InformationFragment) fragmentManager.findFragmentById(R.id.layout_fragment);
+        frag1 = (InformationFragment) fragmentManager.findFragmentById(R.id.layout_fragment_info);
         if (frag1 == null) {
             System.out.println("Creation d'un nouveau fragment");
             frag1 = new InformationFragment();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.add(R.id.layout_fragment, frag1);
+            transaction.add(R.id.layout_fragment_info, frag1);
             transaction.commit();
         } else {
             System.out.println("Recup du fragment existant");
@@ -122,10 +120,9 @@ public class ListePlatsFragActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         // On attache le fragment pour conserver les données
-
         if (!frag1.isAdded()) {
             FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.add(R.id.layout_fragment, frag1);
+            transaction.add(R.id.layout_fragment_info, frag1);
             transaction.commit();
         }
         // On appelle la méthode de la super-classe
@@ -159,14 +156,14 @@ public class ListePlatsFragActivity extends AppCompatActivity {
         super.onStart();
         Intent intent = getIntent();
         action = intent.getStringExtra(MainActivity.ACTION);
-        System.out.println("ListePlatsFragActivity.onStart 1");
+        System.out.println("QuantitePlatsFragActivity.onStart 1");
         new StartNetwork().execute();
-        System.out.println("ListePlatsFragActivity.onStart 2");
+        System.out.println("QuantitePlatsFragActivity.onStart 2");
     }
 
     @Override
     public void finish() {
-        System.out.println("ListePlatsFragActivity.finish");
+        System.out.println("QuantitePlatsFragActivity.finish");
 
         if (readMessages != null) {
             readMessages.cancel(true);

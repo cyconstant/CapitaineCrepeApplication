@@ -103,12 +103,12 @@ public class CuisineActivity extends AppCompatActivity {
 
         // On initialise le fragment en le récupérant si il existe déjà
         // en le créant sinon
-        frag1 = (InformationFragment) fragmentManager.findFragmentById(R.id.layout_fragment);
+        frag1 = (InformationFragment) fragmentManager.findFragmentById(R.id.layout_fragment_info);
         if (frag1 == null) {
             System.out.println("Creation d'un nouveau fragment");
             frag1 = new InformationFragment();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.add(R.id.layout_fragment, frag1);
+            transaction.add(R.id.layout_fragment_info, frag1);
             transaction.commit();
         } else {
             System.out.println("Recup du fragment existant");
@@ -121,7 +121,7 @@ public class CuisineActivity extends AppCompatActivity {
 
         if (!frag1.isAdded()) {
             FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.add(R.id.layout_fragment, frag1);
+            transaction.add(R.id.layout_fragment_info, frag1);
             transaction.commit();
         }
         // On appelle la méthode de la super-classe

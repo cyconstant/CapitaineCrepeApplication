@@ -18,7 +18,8 @@ import java.net.Socket;
 
 public class CommandeActivity extends AppCompatActivity {
 
-    private InformationFragment frag1;
+    private InformationFragment fragInfo;
+    private PlatsDispoActivityFragment fragPlatsDispo;
     private FragmentManager fragmentManager;
 
     private EditText nomDuPlatACommander;
@@ -26,6 +27,7 @@ public class CommandeActivity extends AppCompatActivity {
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private PrintWriter writer;
     private ReadMessages readMessages;
+    private String listeDesPlats = "";
     private String lePlat = "";
     private Socket socket;
 
@@ -39,7 +41,6 @@ public class CommandeActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Void... v) {
             System.out.println("StartNetwork.doInBackground");
-
             try {
                 socket = new Socket("10.0.2.2", 7777);
                 writer = new PrintWriter(socket.getOutputStream(), true);
@@ -65,27 +66,69 @@ public class CommandeActivity extends AppCompatActivity {
     private class ReadMessages extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... v) {
+
+            System.out.println("ReadMessages.doInBackground");
+
+            /* Afficher les plats disponibles */
+            writer.println("LISTE");
+            String message;
+            try {
+                while (!((message = reader.readLine()).equals("FINLISTE"))) {
+                    listeDesPlats += message + "\n";
+                }
+            } catch (IOException e) {
+                System.out.println("ReadMessages Exception");
+                return null;
+            }
+
+            return listeDesPlats;
+        }
+
+        @Override
+        protected void onPostExecute(String listeDesPlats) {
+            displayMessage(listeDesPlats);
+        }
+
+    }
+
+    private void displayMessage(String message) {
+        if (message != null) {
+            fragPlatsDispo.afficherPlatsDispo(listeDesPlats);
+        }
+
+    }
+
+    private class ReadMessagesCommande extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... v) {
+
+            System.out.println("ReadMessagesCommande.doInBackground");
+
+            /* Prendre la commande */
+            writer.println("COMMANDE " + lePlat);
             String retourServeur = "";
             if (!lePlat.equals("")) {
-                    try {
-                        writer.println("COMMANDE " + lePlat);
-                        retourServeur = reader.readLine();
-                    } catch (IOException e) {
-                        return null;
-                    }
+                try {
+                    retourServeur = reader.readLine();
+                } catch (IOException e) {
+                    return null;
+                }
             }
+
             return retourServeur;
         }
 
         @Override
         protected void onPostExecute(String retourServeur) {
-            System.out.println("ReadMessages.onPostExecute");
-            if (retourServeur != null) {
-                frag1.afficherInformation(retourServeur);
-            }
-            System.out.println("Status readMessages =" + this.getStatus());
+            displayMessageCommande(retourServeur);
         }
 
+    }
+
+    private void displayMessageCommande(String message) {
+        if (message != null) {
+            fragInfo.afficherInformation(message);
+        }
     }
 
 
@@ -94,8 +137,6 @@ public class CommandeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_commande);
 
-        System.out.println("CommandeActivity.onCreate");
-
         nomDuPlatACommander = (EditText) findViewById(R.id.nomDuPlatACommander);
 
         // Initialisation du gestionnaire de fragments
@@ -103,15 +144,26 @@ public class CommandeActivity extends AppCompatActivity {
 
         // On initialise le fragment en le récupérant si il existe déjà
         // en le créant sinon
-        frag1 = (InformationFragment) fragmentManager.findFragmentById(R.id.layout_fragment);
-        if (frag1 == null) {
-            System.out.println("Creation d'un nouveau fragment");
-            frag1 = new InformationFragment();
+        fragInfo = (InformationFragment) fragmentManager.findFragmentById(R.id.layout_fragment_info);
+        if (fragInfo == null) {
+            System.out.println("Creation d'un nouveau InformationFragment");
+            fragInfo = new InformationFragment();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.add(R.id.layout_fragment, frag1);
+            transaction.add(R.id.layout_fragment_info, fragInfo);
             transaction.commit();
         } else {
-            System.out.println("Recup du fragment existant");
+            System.out.println("Recup du InformationFragment existant");
+        }
+
+        fragPlatsDispo = (PlatsDispoActivityFragment) fragmentManager.findFragmentById(R.id.layout_fragment_plats_dispo);
+        if (fragPlatsDispo == null) {
+            System.out.println("Creation d'un nouveau PlatsDispoActivityFragment");
+            fragPlatsDispo = new PlatsDispoActivityFragment();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.add(R.id.layout_fragment_plats_dispo, fragPlatsDispo);
+            transaction.commit();
+        } else {
+            System.out.println("Recup du PlatsDispoActivityFragment existant");
         }
     }
 
@@ -119,11 +171,18 @@ public class CommandeActivity extends AppCompatActivity {
     protected void onPause() {
         // On attache le fragment pour conserver les données
 
-        if (!frag1.isAdded()) {
+        if (!fragInfo.isAdded()) {
             FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.add(R.id.layout_fragment, frag1);
+            transaction.add(R.id.layout_fragment_info, fragInfo);
             transaction.commit();
         }
+
+        if (!fragPlatsDispo.isAdded()) {
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.add(R.id.layout_fragment_plats_dispo, fragPlatsDispo);
+            transaction.commit();
+        }
+
         // On appelle la méthode de la super-classe
         super.onPause();
     }
@@ -154,16 +213,16 @@ public class CommandeActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //new StartNetwork().execute();
+        new StartNetwork().execute();
     }
 
     @Override
     public void finish() {
         System.out.println("CommandeActivity.finish");
-        if (readMessages != null) {
+        /*if (readMessages != null) {
             readMessages.cancel(true);
             System.out.println("readMessages.cancel(true)");
-        }
+        }*/
         if (socket != null) {
             try {
                 socket.close();
@@ -179,8 +238,15 @@ public class CommandeActivity extends AppCompatActivity {
     public void validerCommande(View v) {
         lePlat = nomDuPlatACommander.getText().toString();
         if (!lePlat.equals("")) {
-            new StartNetwork().execute();
+            /* commander le plat */
+            ReadMessagesCommande readMessagesCommande = new ReadMessagesCommande();
+            readMessagesCommande.execute();
             nomDuPlatACommander.setText("");
+
+            /* mettre a jour les plats disponibles */
+            listeDesPlats = "";
+            readMessages = new ReadMessages();
+            readMessages.execute();
         }
     }
 }
