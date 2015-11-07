@@ -20,9 +20,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="@string/action_carte"
-            android:id="@+id/buttonLister"
-            android:onClick="listeDesPlats" />
+            android:text="@string/action_commande"
+            android:id="@+id/buttonCommander"
+            android:onClick="commanderUnPlat" />
 
         <Button
             android:layout_width="wrap_content"
@@ -31,14 +31,6 @@
             android:text="@string/action_quantite"
             android:id="@+id/buttonQuantite"
             android:onClick="verifierQuantite" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/action_commande"
-            android:id="@+id/buttonCommander"
-            android:onClick="commanderUnPlat" />
 
         <Button
             android:layout_width="wrap_content"
