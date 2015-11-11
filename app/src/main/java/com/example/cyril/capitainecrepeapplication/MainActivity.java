@@ -9,8 +9,6 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    public final static String ACTION = "ACTION";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,13 +42,6 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("MainActivity.finish");
         super.finish();
     }
-
-
-    /*public void verifierQuantite(View v) {
-        Intent intent = new Intent(this, QuantitePlatsFragActivity.class);
-        intent.putExtra(ACTION, "QUANTITE");
-        startActivity(intent);
-    }*/
 
     public void commanderUnPlat(View v) {
         Intent intent = new Intent(this, CommandeActivity.class);

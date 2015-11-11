@@ -37,8 +37,13 @@ public class QuantiteFragActivityFragment extends Fragment {
         return v;
     }
 
-    public void afficherPlatsDispo(String quantitePlats) {
-        this.quantitePlats = quantitePlats;
+    public void afficherPlatsDispo(String newQuantity) {
+        String[] separated = newQuantity.split("\n");
+        //quantitePlats = separated[0] + "\n";
+        quantitePlats = "Quantite disponible : " + "\n";
+        for (int i = 1; i < separated.length - 1; i += 2) {
+            quantitePlats += " " + separated[i] + " : " + separated[i + 1] + "\n";
+        }
         textViewQuantite.setText(quantitePlats);
     }
 }
