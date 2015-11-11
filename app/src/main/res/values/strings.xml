@@ -26,5 +26,6 @@
     <string name="capitaineCrepes">Capitaine Crepes</string>
     <string name="title_activity_quantite_frag">QuantiteFragActivity</string>
     <string name="image_capitaine">image_capitaine</string>
+    <string name="title_activity_plats_dispo">PlatsDispoActivity</string>
 
 </resources>
