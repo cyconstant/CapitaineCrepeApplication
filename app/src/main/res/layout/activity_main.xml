@@ -16,37 +16,29 @@
         android:src="@drawable/capi"
         android:contentDescription="@string/image_capitaine" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/action_commande"
-            android:id="@+id/buttonCommander"
-            android:onClick="commanderUnPlat" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/action_commande"
+        android:id="@+id/buttonCommander"
+        android:onClick="commanderUnPlat" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/action_quantite"
-            android:id="@+id/buttonQuantite"
-            android:onClick="verifierQuantite" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/action_ajout"
+        android:id="@+id/buttonAjouter"
+        android:onClick="ajouterUnPlat" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/action_ajout"
-            android:id="@+id/buttonAjouter"
-            android:onClick="ajouterUnPlat"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/action_logout"
-            android:id="@+id/buttonLogout"
-            android:onClick="logout" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/action_logout"
+        android:id="@+id/buttonLogout"
+        android:onClick="logout" />
 
 </LinearLayout>
 

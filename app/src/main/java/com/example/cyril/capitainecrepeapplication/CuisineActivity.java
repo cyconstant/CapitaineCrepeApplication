@@ -18,7 +18,8 @@ import java.net.Socket;
 
 public class CuisineActivity extends AppCompatActivity {
 
-    private InformationFragment frag1;
+    private InformationFragment fragInfo;
+    private QuantiteFragActivityFragment fragQuantite;
     private FragmentManager fragmentManager;
 
     private EditText nomDuPlatAAjouter;
@@ -27,6 +28,7 @@ public class CuisineActivity extends AppCompatActivity {
     private PrintWriter writer;
     private ReadMessages readMessages;
     private String quantiteEtNomDuPlat = "";
+    private String listeDesPlats = "";
     private Socket socket;
 
     private class StartNetwork extends AsyncTask<Void, Void, Boolean> {
@@ -62,7 +64,45 @@ public class CuisineActivity extends AppCompatActivity {
         }
     }
 
+
     private class ReadMessages extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... v) {
+
+            System.out.println("ReadMessages.doInBackground");
+
+            /* Afficher la quantite des plats  */
+            writer.println("QUANTITE");
+            String message;
+            try {
+                while (!((message = reader.readLine()).equals("FINLISTE"))) {
+                    listeDesPlats += message + "\n";
+                }
+            } catch (IOException e) {
+                System.out.println("ReadMessages Exception");
+                return null;
+            }
+
+            return listeDesPlats;
+        }
+
+        @Override
+        protected void onPostExecute(String message) {
+            System.out.println("ReadMessages.onPostExecute");
+            if (message != null) {
+                displayMessage();
+            }
+        }
+
+    }
+
+    private void displayMessage() {
+        // On affiche les plats
+        fragQuantite.afficherPlatsDispo(listeDesPlats);
+    }
+
+
+    private class ReadMessagesQuantite extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... v) {
             String retourServeur = "";
@@ -79,11 +119,10 @@ public class CuisineActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String retourServeur) {
-            System.out.println("ReadMessages.onPostExecute");
+            System.out.println("ReadMessagesQuantite.onPostExecute");
             if (retourServeur != null) {
-                frag1.afficherInformation(retourServeur);
+                fragInfo.afficherInformation(retourServeur);
             }
-            System.out.println("Status readMessages =" + this.getStatus());
         }
 
     }
@@ -103,27 +142,47 @@ public class CuisineActivity extends AppCompatActivity {
 
         // On initialise le fragment en le récupérant si il existe déjà
         // en le créant sinon
-        frag1 = (InformationFragment) fragmentManager.findFragmentById(R.id.layout_fragment_info);
-        if (frag1 == null) {
-            System.out.println("Creation d'un nouveau fragment");
-            frag1 = new InformationFragment();
+        fragInfo = (InformationFragment) fragmentManager.findFragmentById(R.id.layout_fragment_info);
+        if (fragInfo == null) {
+            System.out.println("Creation d'un nouveau fragment fragInfo");
+            fragInfo = new InformationFragment();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.add(R.id.layout_fragment_info, frag1);
+            transaction.add(R.id.layout_fragment_info, fragInfo);
             transaction.commit();
         } else {
-            System.out.println("Recup du fragment existant");
+            System.out.println("Recup du fragment fragInfo existant");
         }
+
+        fragQuantite = (QuantiteFragActivityFragment) fragmentManager.findFragmentById(R.id.layout_fragment_quantite);
+        if (fragQuantite == null) {
+            System.out.println("Creation d'un nouveau fragQuantite");
+            fragQuantite = new QuantiteFragActivityFragment();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.add(R.id.layout_fragment_quantite, fragQuantite);
+            transaction.commit();
+        } else {
+            System.out.println("Recup du fragment fragment fragQuantite");
+        }
+
+
     }
 
     @Override
     protected void onPause() {
-        // On attache le fragment pour conserver les données
+        // On attache les fragments pour conserver les données
 
-        if (!frag1.isAdded()) {
+        if (!fragInfo.isAdded()) {
             FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.add(R.id.layout_fragment_info, frag1);
+            transaction.add(R.id.layout_fragment_info, fragInfo);
             transaction.commit();
         }
+
+        if (!fragQuantite.isAdded()) {
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.add(R.id.layout_fragment_quantite, fragQuantite);
+            transaction.commit();
+        }
+
         // On appelle la méthode de la super-classe
         super.onPause();
     }
@@ -154,20 +213,19 @@ public class CuisineActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //new StartNetwork().execute();
+        new StartNetwork().execute();
     }
 
     @Override
     public void finish() {
         System.out.println("CuisineActivity.finish");
-        if (readMessages != null) {
-            readMessages.cancel(true);
-            System.out.println("readMessages.cancel(true)");
-        }
+
         if (socket != null) {
             try {
+                System.out.println("LOGOUT");
+                writer.println("LOGOUT");
                 socket.close();
-                System.out.println("socket.close();");
+                System.out.println("socket closed");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -179,8 +237,15 @@ public class CuisineActivity extends AppCompatActivity {
     public void validerAjout(View v) {
         quantiteEtNomDuPlat = nomDuPlatAAjouter.getText().toString();
         if (!quantiteEtNomDuPlat.equals("")) {
-            new StartNetwork().execute();
+            /* ajouter le plat */
+            ReadMessagesQuantite readMessagesQuantite = new ReadMessagesQuantite();
+            readMessagesQuantite.execute();
             nomDuPlatAAjouter.setText("");
+
+            /* mettre a jour les quantites */
+            listeDesPlats = "";
+            readMessages = new ReadMessages();
+            readMessages.execute();
         }
     }
 }

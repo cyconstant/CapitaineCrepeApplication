@@ -26,9 +26,6 @@
         <activity
             android:name=".CuisineActivity"
             android:label="@string/title_activity_cuisine" />
-        <activity
-            android:name=".QuantitePlatsFragActivity"
-            android:label="@string/title_activity_frag" />
     </application>
 
 </manifest>
