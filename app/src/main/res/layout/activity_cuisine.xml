@@ -16,32 +16,28 @@
         android:layout_height="wrap_content"
         android:id="@+id/layout_fragment_quantite" />
 
-    <LinearLayout
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@id/layout_fragment_quantite">
+        android:layout_below="@id/layout_fragment_quantite"
+        android:ems="10"
+        android:id="@+id/nomDuPlatAAjouter"
+        android:hint="@string/QtenomDuPlatAAjouter" />
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:id="@+id/nomDuPlatAAjouter"
-            android:hint="@string/QtenomDuPlatAAjouter" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_fragment_quantite"
+        android:layout_toRightOf="@id/nomDuPlatAAjouter"
+        android:layout_toEndOf="@id/nomDuPlatAAjouter"
+        android:text="@string/valider"
+        android:id="@+id/buttonValider"
+        android:onClick="validerAjout" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/valider"
-            android:id="@+id/buttonValider"
-            android:onClick="validerAjout" />
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:id="@+id/layout_fragment_info"
-            android:layout_weight="2" />
-
-    </LinearLayout>
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nomDuPlatAAjouter"
+        android:id="@+id/layout_fragment_info" />
 
 </RelativeLayout>
