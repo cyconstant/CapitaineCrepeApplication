@@ -26,6 +26,12 @@
         <activity
             android:name=".CuisineActivity"
             android:label="@string/title_activity_cuisine" />
+
+        <service
+            android:name=".SocketService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="true" />
     </application>
 
 </manifest>
