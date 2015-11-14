@@ -63,7 +63,6 @@ public class CuisineActivity extends AppCompatActivity {
         mBound = true;
     }
 
-
     private void doUnbindService() {
         if (mBound) {
             // Unbind from the service
@@ -72,14 +71,13 @@ public class CuisineActivity extends AppCompatActivity {
         }
     }
 
-
-    private class ReadMessages extends AsyncTask<Void, Void, String> {
+    private class ReadMessages extends AsyncTask<String, Void, String> {
         @Override
-        protected String doInBackground(Void... v) {
+        protected String doInBackground(String... demande) {
 
             System.out.println("ReadMessages.doInBackground");
             System.out.println("mBound=" + mBound);
-            System.out.println("mService=" + mService);
+
             // attendre de recuperer le service
             while (mService == null) {
                 SystemClock.sleep(100);
@@ -89,7 +87,8 @@ public class CuisineActivity extends AppCompatActivity {
 
             reader = mService.getReader();
             /* Demander la quantite des plats dispos */
-            mService.sendMessage("QUANTITE");
+            //mService.sendMessage("QUANTITE");
+            mService.sendMessage(demande[0]);
             String message;
             try {
                 while (!((message = reader.readLine()).equals("FINLISTE"))) {
@@ -100,22 +99,21 @@ public class CuisineActivity extends AppCompatActivity {
                 return null;
             }
 
-            return listeDesPlats;
+            return demande[0];
         }
 
         @Override
-        protected void onPostExecute(String message) {
+        protected void onPostExecute(String demande) {
             System.out.println("ReadMessages.onPostExecute");
-            if (message != null) {
-                displayMessage();
+            if (demande.equalsIgnoreCase("QUANTITE")) {
+                if (listeDesPlats != null) {
+                    fragQuantite.afficherPlatsDispo(listeDesPlats);
+                }
+            } else if (demande.equalsIgnoreCase("AJOUT")) {
+                fragInfo.afficherInformation(listeDesPlats);
             }
         }
 
-    }
-
-    private void displayMessage() {
-        // On affiche les plats
-        fragQuantite.afficherPlatsDispo(listeDesPlats);
     }
 
 
@@ -155,7 +153,7 @@ public class CuisineActivity extends AppCompatActivity {
         nomDuPlatAAjouter = (EditText) findViewById(R.id.nomDuPlatAAjouter);
 
         readMessages = new ReadMessages();
-        readMessages.execute();
+        readMessages.execute("QUANTITE");
 
         // Initialisation du gestionnaire de fragments
         fragmentManager = getFragmentManager();
@@ -242,8 +240,8 @@ public class CuisineActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        doUnbindService();
         super.onDestroy();
+        doUnbindService();
     }
 
     public void validerAjout(View v) {
@@ -257,7 +255,7 @@ public class CuisineActivity extends AppCompatActivity {
             /* mettre a jour les quantites */
             listeDesPlats = "";
             readMessages = new ReadMessages();
-            readMessages.execute();
+            readMessages.execute("QUANTITE");
         }
     }
 }

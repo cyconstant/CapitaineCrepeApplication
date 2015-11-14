@@ -9,12 +9,15 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Intent service;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // connexion au serveur
-        startService(new Intent(MainActivity.this, SocketService.class));
+        service = new Intent(MainActivity.this, SocketService.class);
+        startService(service);
     }
 
     @Override
@@ -39,12 +42,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void finish() {
-        System.out.println("MainActivity.finish");
-        super.finish();
-    }
-
     public void commanderUnPlat(View v) {
         Intent intent = new Intent(this, CommandeActivity.class);
         startActivity(intent);
@@ -58,6 +55,19 @@ public class MainActivity extends AppCompatActivity {
     public void logout(View v) {
         System.out.println("Logout");
         finish();
+    }
+
+    @Override
+    public void finish() {
+        System.out.println("MainActivity.finish");
+        super.finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        System.out.println("MainActivity.onDestroy");
+        stopService(service);
+        super.onDestroy();
     }
 
 }

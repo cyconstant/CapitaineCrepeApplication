@@ -48,13 +48,16 @@ public class SocketService extends Service {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
-        try {
-            socket.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        sendMessage("LOGOUT");
+        if (socket != null) {
+            try {
+                socket.close();
+                System.out.println("socket closed");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        socket = null;
+        super.onDestroy();
     }
 
     @Override
@@ -75,7 +78,7 @@ public class SocketService extends Service {
         protected Boolean doInBackground(Void... v) {
             System.out.println("StartNetwork.doInBackground");
             try {
-                Socket socket = new Socket(SERVERIP, SERVERPORT);
+                socket = new Socket(SERVERIP, SERVERPORT);
                 writer = new PrintWriter(socket.getOutputStream(), true);
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 return true;
