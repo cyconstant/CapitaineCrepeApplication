@@ -2,8 +2,14 @@ package com.example.cyril.capitainecrepeapplication;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,8 +19,6 @@ import android.widget.EditText;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 
 public class CuisineActivity extends AppCompatActivity {
 
@@ -25,42 +29,46 @@ public class CuisineActivity extends AppCompatActivity {
     private EditText nomDuPlatAAjouter;
 
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-    private PrintWriter writer;
     private ReadMessages readMessages;
     private String quantiteEtNomDuPlat = "";
     private String listeDesPlats = "";
-    private Socket socket;
 
-    private class StartNetwork extends AsyncTask<Void, Void, Boolean> {
+    SocketService mService;
+    boolean mBound = false;
+
+    /**
+     * Defines callbacks for service binding, passed to bindService()
+     */
+    private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
-        protected void onPreExecute() {
-            System.out.println("StartNetwork.onPreExecute");
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to SocketService, cast the IBinder and get SocketService instance
+            SocketService.LocalBinder binder = (SocketService.LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
         }
 
         @Override
-        protected Boolean doInBackground(Void... v) {
-            System.out.println("StartNetwork.doInBackground");
-
-            try {
-                socket = new Socket("10.0.2.2", 7777);
-                writer = new PrintWriter(socket.getOutputStream(), true);
-                reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                return true;
-            } catch (IOException e) {
-                return false;
-            }
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
         }
+    };
 
-        @Override
-        protected void onPostExecute(Boolean b) {
-            if (b) {
-                System.out.println("Connected to server\n");
-                readMessages = new ReadMessages();
-                readMessages.execute();
-            } else {
-                System.out.println("Could not connect to server\n");
-            }
+    private void doBindService() {
+        // Bind to SocketService
+        Intent intent = new Intent(this, SocketService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        mBound = true;
+    }
+
+
+    private void doUnbindService() {
+        if (mBound) {
+            // Unbind from the service
+            unbindService(mConnection);
+            mBound = false;
         }
     }
 
@@ -70,9 +78,18 @@ public class CuisineActivity extends AppCompatActivity {
         protected String doInBackground(Void... v) {
 
             System.out.println("ReadMessages.doInBackground");
+            System.out.println("mBound=" + mBound);
+            System.out.println("mService=" + mService);
+            // attendre de recuperer le service
+            while (mService == null) {
+                SystemClock.sleep(100);
+                System.out.println("mService=" + mService);
+            }
+            System.out.println("mService=" + mService);
 
-            /* Afficher la quantite des plats  */
-            writer.println("QUANTITE");
+            reader = mService.getReader();
+            /* Demander la quantite des plats dispos */
+            mService.sendMessage("QUANTITE");
             String message;
             try {
                 while (!((message = reader.readLine()).equals("FINLISTE"))) {
@@ -107,8 +124,8 @@ public class CuisineActivity extends AppCompatActivity {
         protected String doInBackground(Void... v) {
             String retourServeur = "";
             if (!quantiteEtNomDuPlat.equals("")) {
-                    try {
-                        writer.println("AJOUT " + quantiteEtNomDuPlat);
+                try {
+                    mService.sendMessage("AJOUT " + quantiteEtNomDuPlat);
                         retourServeur = reader.readLine();
                     } catch (IOException e) {
                         return null;
@@ -134,14 +151,17 @@ public class CuisineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cuisine);
 
         System.out.println("CuisineActivity.onCreate");
-
+        doBindService();
         nomDuPlatAAjouter = (EditText) findViewById(R.id.nomDuPlatAAjouter);
+
+        readMessages = new ReadMessages();
+        readMessages.execute();
 
         // Initialisation du gestionnaire de fragments
         fragmentManager = getFragmentManager();
 
-        // On initialise le fragment en le récupérant si il existe déjà
-        // en le créant sinon
+        // On initialise les fragments en les récupérant si ils existent déjà
+        // en les créant sinon
         fragInfo = (InformationFragment) fragmentManager.findFragmentById(R.id.layout_fragment_info);
         if (fragInfo == null) {
             System.out.println("Creation d'un nouveau fragment fragInfo");
@@ -170,7 +190,6 @@ public class CuisineActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         // On attache les fragments pour conserver les données
-
         if (!fragInfo.isAdded()) {
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.add(R.id.layout_fragment_info, fragInfo);
@@ -213,26 +232,19 @@ public class CuisineActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        new StartNetwork().execute();
     }
 
     @Override
     public void finish() {
         System.out.println("CuisineActivity.finish");
-
-        if (socket != null) {
-            try {
-                System.out.println("LOGOUT");
-                writer.println("LOGOUT");
-                socket.close();
-                System.out.println("socket closed");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
         super.finish();
     }
 
+    @Override
+    protected void onDestroy() {
+        doUnbindService();
+        super.onDestroy();
+    }
 
     public void validerAjout(View v) {
         quantiteEtNomDuPlat = nomDuPlatAAjouter.getText().toString();
