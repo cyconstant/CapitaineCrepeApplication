@@ -18,20 +18,16 @@ import android.widget.EditText;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class CuisineActivity extends AppCompatActivity {
 
     private InformationFragment fragInfo;
     private QuantiteFragActivityFragment fragQuantite;
     private FragmentManager fragmentManager;
-
     private EditText nomDuPlatAAjouter;
-
-    private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-    private ReadMessages readMessages;
     private String quantiteEtNomDuPlat = "";
     private String listeDesPlats = "";
+    String retourServeur = "";
 
     SocketService mService;
     boolean mBound = false;
@@ -78,68 +74,53 @@ public class CuisineActivity extends AppCompatActivity {
             System.out.println("ReadMessages.doInBackground");
             System.out.println("mBound=" + mBound);
 
-            // attendre de recuperer le service
+            String requete = demande[0];
+            /* attendre de recuperer le service */
             while (mService == null) {
                 SystemClock.sleep(100);
                 System.out.println("mService=" + mService);
             }
             System.out.println("mService=" + mService);
 
-            reader = mService.getReader();
+            BufferedReader reader = mService.getReader();
             /* Demander la quantite des plats dispos */
-            //mService.sendMessage("QUANTITE");
-            mService.sendMessage(demande[0]);
             String message;
             try {
-                while (!((message = reader.readLine()).equals("FINLISTE"))) {
-                    listeDesPlats += message + "\n";
+                /* Afficher la quantite des plats dispos */
+                if (requete.equalsIgnoreCase("QUANTITE")) {
+                    mService.sendMessage("QUANTITE");
+                    while (!((message = reader.readLine()).equals("FINLISTE"))) {
+                        listeDesPlats += message + "\n";
+                    }
+                /* Commander un plat */
+                } else if (requete.equalsIgnoreCase("AJOUT ")) {
+                    if (!quantiteEtNomDuPlat.equals("")) {
+                        mService.sendMessage("AJOUT " + quantiteEtNomDuPlat);
+                        retourServeur = reader.readLine();
+                    }
                 }
             } catch (IOException e) {
                 System.out.println("ReadMessages Exception");
                 return null;
             }
 
-            return demande[0];
+            return requete;
         }
 
         @Override
         protected void onPostExecute(String demande) {
             System.out.println("ReadMessages.onPostExecute");
-            if (demande.equalsIgnoreCase("QUANTITE")) {
-                if (listeDesPlats != null) {
-                    fragQuantite.afficherPlatsDispo(listeDesPlats);
-                }
-            } else if (demande.equalsIgnoreCase("AJOUT")) {
-                fragInfo.afficherInformation(listeDesPlats);
-            }
+            displayMessageCommande(demande);
         }
 
     }
 
-
-    private class ReadMessagesQuantite extends AsyncTask<Void, Void, String> {
-        @Override
-        protected String doInBackground(Void... v) {
-            String retourServeur = "";
-            if (!quantiteEtNomDuPlat.equals("")) {
-                try {
-                    mService.sendMessage("AJOUT " + quantiteEtNomDuPlat);
-                        retourServeur = reader.readLine();
-                    } catch (IOException e) {
-                        return null;
-                    }
-            }
-            return retourServeur;
+    private void displayMessageCommande(String demande) {
+        if (demande.equalsIgnoreCase("QUANTITE")) {
+            fragQuantite.afficherPlatsDispo(listeDesPlats);
+        } else if (demande.equalsIgnoreCase("AJOUT ")) {
+            fragInfo.afficherInformation(retourServeur);
         }
-
-        @Override
-        protected void onPostExecute(String retourServeur) {
-            System.out.println("ReadMessagesQuantite.onPostExecute");
-            if (retourServeur != null) {
-                fragInfo.afficherInformation(retourServeur);
-            }
-        }
-
     }
 
 
@@ -152,7 +133,7 @@ public class CuisineActivity extends AppCompatActivity {
         doBindService();
         nomDuPlatAAjouter = (EditText) findViewById(R.id.nomDuPlatAAjouter);
 
-        readMessages = new ReadMessages();
+        ReadMessages readMessages = new ReadMessages();
         readMessages.execute("QUANTITE");
 
         // Initialisation du gestionnaire de fragments
@@ -246,15 +227,15 @@ public class CuisineActivity extends AppCompatActivity {
 
     public void validerAjout(View v) {
         quantiteEtNomDuPlat = nomDuPlatAAjouter.getText().toString();
-        if (!quantiteEtNomDuPlat.equals("")) {
+        if (!quantiteEtNomDuPlat.equals("") && quantiteEtNomDuPlat.length() > 2) {
             /* ajouter le plat */
-            ReadMessagesQuantite readMessagesQuantite = new ReadMessagesQuantite();
-            readMessagesQuantite.execute();
+            ReadMessages readMessagesQuantite = new ReadMessages();
+            readMessagesQuantite.execute("AJOUT ");
             nomDuPlatAAjouter.setText("");
 
             /* mettre a jour les quantites */
             listeDesPlats = "";
-            readMessages = new ReadMessages();
+            ReadMessages readMessages = new ReadMessages();
             readMessages.execute("QUANTITE");
         }
     }

@@ -25,13 +25,9 @@ public class CommandeActivity extends AppCompatActivity {
     private InformationFragment fragInfo;
     private PlatsDispoActivityFragment fragPlatsDispo;
     private FragmentManager fragmentManager;
-
     private EditText nomDuPlatACommander;
-
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
     private ReadMessages readMessages;
-    private String listeDesPlats = "";
     private String lePlat = "";
 
     SocketService mService;
@@ -80,6 +76,9 @@ public class CommandeActivity extends AppCompatActivity {
             System.out.println("ReadMessages.doInBackground");
             System.out.println("mBound=" + mBound);
 
+            String listeDesPlats = "";
+            System.out.println("listeDesPlats=" + listeDesPlats);
+
             // attendre de recuperer le service
             while (mService == null) {
                 SystemClock.sleep(100);
@@ -106,7 +105,6 @@ public class CommandeActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String listeDesPlats) {
-
             displayMessage(listeDesPlats);
         }
 
@@ -114,9 +112,9 @@ public class CommandeActivity extends AppCompatActivity {
 
     private void displayMessage(String message) {
         if (message != null) {
-            fragPlatsDispo.afficherPlatsDispo(listeDesPlats);
+            //fragPlatsDispo.afficherPlatsDispo(listeDesPlats);
+            fragPlatsDispo.afficherPlatsDispo(message);
         }
-
     }
 
     private class ReadMessagesCommande extends AsyncTask<Void, Void, String> {
@@ -260,7 +258,6 @@ public class CommandeActivity extends AppCompatActivity {
             nomDuPlatACommander.setText("");
 
             /* mettre a jour les plats disponibles */
-            listeDesPlats = "";
             readMessages = new ReadMessages();
             readMessages.execute();
         }

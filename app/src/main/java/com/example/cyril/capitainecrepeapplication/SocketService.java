@@ -17,17 +17,14 @@ public class SocketService extends Service {
     public static final String SERVERIP = "10.0.2.2";
     public static final int SERVERPORT = 7777;
     private PrintWriter writer;
-
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-    public BufferedReader getReader() {
-        return reader;
-    }
-
     private Socket socket;
     // Binder given to clients
     private final IBinder myBinder = new LocalBinder();
 
+    public BufferedReader getReader() {
+        return reader;
+    }
 
     public SocketService() {
     }
@@ -91,8 +88,6 @@ public class SocketService extends Service {
         protected void onPostExecute(Boolean b) {
             if (b) {
                 System.out.println("Connected to server\n");
-                //readMessages = new ReadMessages();
-                //readMessages.execute();
             } else {
                 System.out.println("Could not connect to server\n");
             }
