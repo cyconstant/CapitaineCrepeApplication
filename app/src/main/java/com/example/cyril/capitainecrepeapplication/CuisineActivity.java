@@ -16,9 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-
 public class CuisineActivity extends AppCompatActivity {
 
     private InformationFragment fragInfo;
@@ -27,7 +24,7 @@ public class CuisineActivity extends AppCompatActivity {
     private EditText nomDuPlatAAjouter;
     private String quantiteEtNomDuPlat = "";
     private String listeDesPlats = "";
-    String retourServeur = "";
+    private String retourServeur = "";
 
     SocketService mService;
     boolean mBound = false;
@@ -77,32 +74,25 @@ public class CuisineActivity extends AppCompatActivity {
                 SystemClock.sleep(100);
                 System.out.println("mService=" + mService);
             }
-            System.out.println("mService=" + mService);
 
-            BufferedReader reader = mService.getReader();
-            /* Demander la quantite des plats dispos */
-            String message;
-            try {
-                /* Afficher la quantite des plats dispos */
-                if (requete.equalsIgnoreCase("QUANTITE")) {
-                    mService.sendMessage("QUANTITE");
-                    while (!((message = reader.readLine()).equals("FINLISTE"))) {
-                        listeDesPlats += message + "\n";
-                    }
-                /* Commander un plat */
-                } else if (requete.equalsIgnoreCase("AJOUT ")) {
-                    if (!quantiteEtNomDuPlat.equals("")) {
-                        mService.sendMessage("AJOUT " + quantiteEtNomDuPlat);
-                        retourServeur = reader.readLine();
-                    }
+            /* Afficher la quantite des plats dispos */
+            if (requete.equalsIgnoreCase("QUANTITE")) {
+                String message;
+                mService.sendMessage("QUANTITE");
+                while (!((message = mService.readLine()).equals("FINLISTE"))) {
+                    listeDesPlats += message + "\n";
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
+            /* Ajouter un plat */
+            } else if (requete.equalsIgnoreCase("AJOUT ")) {
+                if (!quantiteEtNomDuPlat.equals("")) {
+                    mService.sendMessage("AJOUT " + quantiteEtNomDuPlat);
+                    retourServeur = mService.readLine();
+                }
             }
 
             return requete;
         }
+
 
         @Override
         protected void onPostExecute(String requete) {
