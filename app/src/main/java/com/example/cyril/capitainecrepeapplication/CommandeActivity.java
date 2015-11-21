@@ -18,7 +18,6 @@ import android.widget.EditText;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class CommandeActivity extends AppCompatActivity {
 
@@ -26,16 +25,14 @@ public class CommandeActivity extends AppCompatActivity {
     private PlatsDispoActivityFragment fragPlatsDispo;
     private FragmentManager fragmentManager;
     private EditText nomDuPlatACommander;
-    private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private ReadMessages readMessages;
     private String lePlat = "";
+    private String listeDesPlats = "";
+    String retourServeur = "";
 
     SocketService mService;
     boolean mBound = false;
 
-    /**
-     * Defines callbacks for service binding, passed to bindService()
-     */
     private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
@@ -69,85 +66,59 @@ public class CommandeActivity extends AppCompatActivity {
     }
 
 
-    private class ReadMessages extends AsyncTask<Void, Void, String> {
+    private class ReadMessages extends AsyncTask<String, Void, String> {
         @Override
-        protected String doInBackground(Void... v) {
+        protected String doInBackground(String... demande) {
 
             System.out.println("ReadMessages.doInBackground");
             System.out.println("mBound=" + mBound);
+            String requete = demande[0];
 
-            String listeDesPlats = "";
-            System.out.println("listeDesPlats=" + listeDesPlats);
-
-            // attendre de recuperer le service
+            /* attendre de recuperer le service */
             while (mService == null) {
                 SystemClock.sleep(100);
                 System.out.println("mService=" + mService);
             }
             System.out.println("mService=" + mService);
 
-            reader = mService.getReader();
+            BufferedReader reader = mService.getReader();
 
-            /* Demander les plats disponibles */
-            mService.sendMessage("LISTE");
-            String message;
             try {
-                while (!((message = reader.readLine()).equals("FINLISTE"))) {
-                    listeDesPlats += message + "\n";
+                /* Demander les plats disponibles */
+                if (requete.equalsIgnoreCase("LISTE")) {
+                    String message;
+                    mService.sendMessage("LISTE");
+                    while (!((message = reader.readLine()).equals("FINLISTE"))) {
+                        listeDesPlats += message + "\n";
+                    }
+                }
+                /* Prendre la commande */
+                if (!lePlat.equals("")) {
+                    mService.sendMessage("COMMANDE " + lePlat);
+                    retourServeur = reader.readLine();
                 }
             } catch (IOException e) {
-                System.out.println("ReadMessages Exception");
+                e.printStackTrace();
                 return null;
             }
-
-            return listeDesPlats;
+            System.out.println("listeDesPlats=" + listeDesPlats);
+            return requete;
         }
 
         @Override
-        protected void onPostExecute(String listeDesPlats) {
-            displayMessage(listeDesPlats);
+        protected void onPostExecute(String requete) {
+            displayMessage(requete);
         }
 
     }
 
-    private void displayMessage(String message) {
-        if (message != null) {
-            //fragPlatsDispo.afficherPlatsDispo(listeDesPlats);
-            fragPlatsDispo.afficherPlatsDispo(message);
-        }
-    }
-
-    private class ReadMessagesCommande extends AsyncTask<Void, Void, String> {
-        @Override
-        protected String doInBackground(Void... v) {
-
-            System.out.println("ReadMessagesCommande.doInBackground");
-
-            /* Prendre la commande */
-            mService.sendMessage("COMMANDE " + lePlat);
-            String retourServeur = "";
-            if (!lePlat.equals("")) {
-                try {
-                    retourServeur = reader.readLine();
-                } catch (IOException e) {
-                    return null;
-                }
-            }
-
-            return retourServeur;
+    private void displayMessage(String requete) {
+        if (requete.equalsIgnoreCase("LISTE")) {
+            fragPlatsDispo.afficherPlatsDispo(listeDesPlats);
+        } else if (requete.equalsIgnoreCase("COMMANDE ")) {
+            fragInfo.afficherInformation(retourServeur);
         }
 
-        @Override
-        protected void onPostExecute(String retourServeur) {
-            displayMessageCommande(retourServeur);
-        }
-
-    }
-
-    private void displayMessageCommande(String message) {
-        if (message != null) {
-            fragInfo.afficherInformation(message);
-        }
     }
 
 
@@ -157,7 +128,7 @@ public class CommandeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_commande);
         doBindService();
         readMessages = new ReadMessages();
-        readMessages.execute();
+        readMessages.execute("LISTE");
 
         nomDuPlatACommander = (EditText) findViewById(R.id.nomDuPlatACommander);
 
@@ -253,13 +224,14 @@ public class CommandeActivity extends AppCompatActivity {
         lePlat = nomDuPlatACommander.getText().toString();
         if (!lePlat.equals("")) {
             /* commander le plat */
-            ReadMessagesCommande readMessagesCommande = new ReadMessagesCommande();
-            readMessagesCommande.execute();
+            ReadMessages readMessagesCommande = new ReadMessages();
+            readMessagesCommande.execute("COMMANDE ");
             nomDuPlatACommander.setText("");
 
             /* mettre a jour les plats disponibles */
+            listeDesPlats = "";
             readMessages = new ReadMessages();
-            readMessages.execute();
+            readMessages.execute("LISTE");
         }
     }
 }

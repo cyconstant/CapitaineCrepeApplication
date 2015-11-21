@@ -32,9 +32,6 @@ public class CuisineActivity extends AppCompatActivity {
     SocketService mService;
     boolean mBound = false;
 
-    /**
-     * Defines callbacks for service binding, passed to bindService()
-     */
     private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
@@ -100,7 +97,7 @@ public class CuisineActivity extends AppCompatActivity {
                     }
                 }
             } catch (IOException e) {
-                System.out.println("ReadMessages Exception");
+                e.printStackTrace();
                 return null;
             }
 
@@ -108,17 +105,17 @@ public class CuisineActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(String demande) {
+        protected void onPostExecute(String requete) {
             System.out.println("ReadMessages.onPostExecute");
-            displayMessageCommande(demande);
+            displayMessage(requete);
         }
 
     }
 
-    private void displayMessageCommande(String demande) {
-        if (demande.equalsIgnoreCase("QUANTITE")) {
+    private void displayMessage(String requete) {
+        if (requete.equalsIgnoreCase("QUANTITE")) {
             fragQuantite.afficherPlatsDispo(listeDesPlats);
-        } else if (demande.equalsIgnoreCase("AJOUT ")) {
+        } else if (requete.equalsIgnoreCase("AJOUT ")) {
             fragInfo.afficherInformation(retourServeur);
         }
     }
@@ -210,6 +207,7 @@ public class CuisineActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        System.out.println("CuisineActivity.onStart");
         super.onStart();
     }
 
