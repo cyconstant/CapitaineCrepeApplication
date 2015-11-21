@@ -16,9 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-
 public class CommandeActivity extends AppCompatActivity {
 
     private InformationFragment fragInfo;
@@ -81,26 +78,20 @@ public class CommandeActivity extends AppCompatActivity {
             }
             System.out.println("mService=" + mService);
 
-            BufferedReader reader = mService.getReader();
-
-            try {
-                /* Demander les plats disponibles */
-                if (requete.equalsIgnoreCase("LISTE")) {
-                    String message;
-                    mService.sendMessage("LISTE");
-                    while (!((message = reader.readLine()).equals("FINLISTE"))) {
-                        listeDesPlats += message + "\n";
-                    }
+            /* Demander les plats disponibles */
+            if (requete.equalsIgnoreCase("LISTE")) {
+                String message;
+                mService.sendMessage("LISTE");
+                while (!((message = mService.readLine()).equals("FINLISTE"))) {
+                    listeDesPlats += message + "\n";
                 }
-                /* Prendre la commande */
-                if (!lePlat.equals("")) {
-                    mService.sendMessage("COMMANDE " + lePlat);
-                    retourServeur = reader.readLine();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
             }
+            /* Prendre la commande */
+            if (!lePlat.equals("")) {
+                mService.sendMessage("COMMANDE " + lePlat);
+                retourServeur = mService.readLine();
+            }
+
             System.out.println("listeDesPlats=" + listeDesPlats);
             return requete;
         }

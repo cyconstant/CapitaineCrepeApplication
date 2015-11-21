@@ -22,10 +22,6 @@ public class SocketService extends Service {
     // Binder given to clients
     private final IBinder myBinder = new LocalBinder();
 
-    public BufferedReader getReader() {
-        return reader;
-    }
-
     public SocketService() {
     }
 
@@ -101,5 +97,16 @@ public class SocketService extends Service {
             writer.println(message);
             writer.flush();
         }
+    }
+
+    public String readLine() {
+        if (reader != null) {
+            try {
+                return reader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return "Network error.";
     }
 }
