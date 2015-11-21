@@ -22,7 +22,7 @@ import java.io.IOException;
 public class CuisineActivity extends AppCompatActivity {
 
     private InformationFragment fragInfo;
-    private QuantiteFragActivityFragment fragQuantite;
+    private QuantiteActivityFragment fragQuantite;
     private FragmentManager fragmentManager;
     private EditText nomDuPlatAAjouter;
     private String quantiteEtNomDuPlat = "";
@@ -149,10 +149,10 @@ public class CuisineActivity extends AppCompatActivity {
             System.out.println("Recup du fragment fragInfo existant");
         }
 
-        fragQuantite = (QuantiteFragActivityFragment) fragmentManager.findFragmentById(R.id.layout_fragment_quantite);
+        fragQuantite = (QuantiteActivityFragment) fragmentManager.findFragmentById(R.id.layout_fragment_quantite);
         if (fragQuantite == null) {
             System.out.println("Creation d'un nouveau fragQuantite");
-            fragQuantite = new QuantiteFragActivityFragment();
+            fragQuantite = new QuantiteActivityFragment();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.add(R.id.layout_fragment_quantite, fragQuantite);
             transaction.commit();

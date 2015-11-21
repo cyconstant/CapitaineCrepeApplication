@@ -12,12 +12,12 @@ import android.widget.TextView;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class QuantiteFragActivityFragment extends Fragment {
+public class QuantiteActivityFragment extends Fragment {
 
     private TextView textViewQuantite;
     private String quantitePlats = "";
 
-    public QuantiteFragActivityFragment() {
+    public QuantiteActivityFragment() {
     }
 
     @Override
