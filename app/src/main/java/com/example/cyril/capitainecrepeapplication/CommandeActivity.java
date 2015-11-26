@@ -15,13 +15,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class CommandeActivity extends AppCompatActivity {
 
     private InformationFragment fragInfo;
     private PlatsDispoActivityFragment fragPlatsDispo;
     private FragmentManager fragmentManager;
-    private EditText nomDuPlatACommander;
+    private TextView nomDuPlatACommander;
     private ReadMessages readMessages;
     private String lePlat = "";
     private String listeDesPlats = "";
@@ -87,9 +88,19 @@ public class CommandeActivity extends AppCompatActivity {
                 }
             }
             /* Prendre la commande */
-            if (!lePlat.equals("")) {
-                mService.sendMessage("COMMANDE " + lePlat);
+            // if (!lePlat.equals("")) {
+            // new thing
+            if (fragPlatsDispo.commandeCrepe()) {
+                System.out.println("passage dans Prendre la commande");
+                        // end new thing
+                        // mService.sendMessage("COMMANDE " + lePlat);
+                        // new thing
+                        mService.sendMessage("COMMANDE " + fragPlatsDispo.getLePlatACommander());
+                // end new thing
                 retourServeur = mService.readLine();
+                // new thing
+                fragPlatsDispo.resetCommandeCrepe();
+                // end new thing
             }
 
             System.out.println("listeDesPlats=" + listeDesPlats);
@@ -121,7 +132,7 @@ public class CommandeActivity extends AppCompatActivity {
         readMessages = new ReadMessages();
         readMessages.execute("LISTE");
 
-        nomDuPlatACommander = (EditText) findViewById(R.id.nomDuPlatACommander);
+        nomDuPlatACommander = (TextView) findViewById(R.id.nomDuPlatACommander);
 
         // Initialisation du gestionnaire de fragments
         fragmentManager = getFragmentManager();
