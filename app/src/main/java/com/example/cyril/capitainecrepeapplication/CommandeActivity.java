@@ -88,19 +88,11 @@ public class CommandeActivity extends AppCompatActivity {
                 }
             }
             /* Prendre la commande */
-            // if (!lePlat.equals("")) {
-            // new thing
             if (fragPlatsDispo.commandeCrepe()) {
                 System.out.println("passage dans Prendre la commande");
-                        // end new thing
-                        // mService.sendMessage("COMMANDE " + lePlat);
-                        // new thing
                         mService.sendMessage("COMMANDE " + fragPlatsDispo.getLePlatACommander());
-                // end new thing
                 retourServeur = mService.readLine();
-                // new thing
                 fragPlatsDispo.resetCommandeCrepe();
-                // end new thing
             }
 
             System.out.println("listeDesPlats=" + listeDesPlats);
