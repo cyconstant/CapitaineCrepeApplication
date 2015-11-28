@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 public class CommandeActivity extends AppCompatActivity {
@@ -24,12 +23,11 @@ public class CommandeActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private TextView nomDuPlatACommander;
     private ReadMessages readMessages;
-    private String lePlat = "";
     private String listeDesPlats = "";
     String retourServeur = "";
 
-    SocketService mService;
-    boolean mBound = false;
+    private SocketService mService;
+    private boolean mBound = false;
 
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -83,14 +81,16 @@ public class CommandeActivity extends AppCompatActivity {
             if (requete.equalsIgnoreCase("LISTE")) {
                 String message;
                 mService.sendMessage("LISTE");
+                /* lire la 1ere ligne */
+                mService.readLine();
+                /* lire la liste des plats */
                 while (!((message = mService.readLine()).equals("FINLISTE"))) {
                     listeDesPlats += message + "\n";
                 }
             }
             /* Prendre la commande */
             if (fragPlatsDispo.commandeCrepe()) {
-                System.out.println("passage dans Prendre la commande");
-                        mService.sendMessage("COMMANDE " + fragPlatsDispo.getLePlatACommander());
+                mService.sendMessage("COMMANDE " + fragPlatsDispo.getLePlatACommander());
                 retourServeur = mService.readLine();
                 fragPlatsDispo.resetCommandeCrepe();
             }
@@ -156,8 +156,7 @@ public class CommandeActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        // On attache le fragment pour conserver les données
-
+        // On attache les fragments pour conserver les données
         if (!fragInfo.isAdded()) {
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.add(R.id.layout_fragment_info, fragInfo);
@@ -170,7 +169,7 @@ public class CommandeActivity extends AppCompatActivity {
             transaction.commit();
         }
 
-        // On appelle la méthode de la super-classe
+        // Appeler la méthode de la super-classe
         super.onPause();
     }
 
@@ -215,7 +214,7 @@ public class CommandeActivity extends AppCompatActivity {
     }
 
     public void validerCommande(View v) {
-        lePlat = nomDuPlatACommander.getText().toString();
+        String lePlat = nomDuPlatACommander.getText().toString();
         if (!lePlat.equals("")) {
             /* commander le plat */
             ReadMessages readMessagesCommande = new ReadMessages();

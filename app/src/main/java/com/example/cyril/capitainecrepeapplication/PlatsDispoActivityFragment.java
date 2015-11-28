@@ -2,7 +2,6 @@ package com.example.cyril.capitainecrepeapplication;
 
 //import android.support.v4.app.Fragment;
 
-import android.app.Fragment;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -22,7 +20,6 @@ public class PlatsDispoActivityFragment extends ListFragment {
     public String lePlatACommander;
     int tailleTableauValues ;
     private boolean commandeDeCrepe = false;
-    private TextView lePlatFrag;
 
     public PlatsDispoActivityFragment() {
     }
@@ -64,22 +61,16 @@ public class PlatsDispoActivityFragment extends ListFragment {
         String selection = l.getItemAtPosition(position).toString();
 
         System.out.println("crepe : " + selection + " position : " + position);
-        // reparation du String :
+        /* enlever les 2 espaces */
         String selectionNew = selection.substring(2);
-        lePlatFrag = (TextView) getActivity().findViewById(R.id.nomDuPlatACommander);
+        TextView lePlatFrag = (TextView) getActivity().findViewById(R.id.nomDuPlatACommander);
 
-        if (position == 0){
-            lePlatACommander = "";
-            lePlatFrag.setText("");
-        }
+        lePlatACommander = "";
+        lePlatACommander = selectionNew;
+        lePlatFrag.setText(lePlatACommander);
+        commandeDeCrepe = true;
+        System.out.println("lePlatACommander : " + lePlatACommander);
 
-        if (position > 0 && position <= tailleTableauValues) {
-            lePlatACommander = "";
-            lePlatACommander = selectionNew;
-            lePlatFrag.setText(lePlatACommander);
-            commandeDeCrepe = true ;
-            System.out.println("lePlatACommander : " + lePlatACommander);
-        }
         super.onListItemClick(l, v, position, id);
     }
 
@@ -95,8 +86,5 @@ public class PlatsDispoActivityFragment extends ListFragment {
         return lePlatACommander;
     }
 
-    public void setLePlatACommander(String s){
-        lePlatACommander = s ;
-    }
 
 }
