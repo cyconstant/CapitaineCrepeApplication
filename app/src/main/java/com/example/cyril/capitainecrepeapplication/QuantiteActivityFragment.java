@@ -19,9 +19,10 @@ public class QuantiteActivityFragment extends ListFragment {
 
     private TextView quantitePlatFrag ;
     private String quantitePlats = "";
+    private String listeNomString = "";
 
-    private String listeQuantiteNom[];
-    private String listeNom[];
+    private String[] listeQuantiteNom = new String[40];
+    private String[] listeNom = new String[40];
     private String renvoi;
     private String lePlatAAjouter;
     private boolean ajoutDeCrepe = false;
@@ -52,20 +53,32 @@ public class QuantiteActivityFragment extends ListFragment {
     public void afficherPlatsDispo(String newQuantity) {
         String[] separated = newQuantity.split("\n");
         //quantitePlats = separated[0] + "\n";
-        quantitePlats = "Quantite disponible : " + "\n";
+        //quantitePlats = "Quantite disponible : " + "\n";
         // on met sur une seule ligne le nom et la quantite.
+        //int j = 0;
         for (int i = 1; i < separated.length - 1; i += 2) {
-            // quantitePlats += " " + separated[i] + " : " + separated[i + 1] + "\n";
-            listeQuantiteNom[i] = separated[i+1] + " " + separated[i];
+            quantitePlats += " " + separated[i+1] + " " + separated[i] + "\n";
+            listeNomString += separated[i] + "\n";
             // on liste les noms seuls
-            listeNom[i] = separated[i];
+            //listeNom[j] = separated[i];
+            //j++;
         }
+        listeQuantiteNom = null;
+        listeNom = null;
+        listeQuantiteNom = quantitePlats.split("\n");
+        listeNom = listeNomString.split("\n");
         // on peut afficher la liste
         // textViewQuantite.setText(quantitePlats);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.mylist, listeQuantiteNom);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.mylist, listeQuantiteNom);
         tailleTableauQuantiteNom = listeQuantiteNom.length;
         setListAdapter(adapter);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
     }
 
 
@@ -77,10 +90,15 @@ public class QuantiteActivityFragment extends ListFragment {
             dernierElementClique = position;
             compteurDeClics++;
             renvoi = Integer.toString(compteurDeClics)+" "+listeNom[position];
+        }else {
+            System.out.println("changement d'item detecte");
+            compteurDeClics = 1;
+            renvoi = Integer.toString(compteurDeClics)+" "+listeNom[position];
+            dernierElementClique = position;
+            quantitePlatFrag.setText("renvoi");
         }
+
         System.out.println(renvoi);
-        // reparation du String :
-        // String selectionNew = selection.substring(2);
         quantitePlatFrag = (TextView) getActivity().findViewById(R.id.nomDuPlatAAjouter);
 
         //if (position == 0){
@@ -91,7 +109,7 @@ public class QuantiteActivityFragment extends ListFragment {
         if (position >= 0 && position <= tailleTableauQuantiteNom) {
             lePlatAAjouter = "";
             lePlatAAjouter = renvoi;
-            quantitePlatFrag.setText(renvoi);
+            quantitePlatFrag.setText(lePlatAAjouter);
             ajoutDeCrepe = true ;
             System.out.println("lePlatAAjouter : " + lePlatAAjouter);
         }
@@ -110,8 +128,5 @@ public class QuantiteActivityFragment extends ListFragment {
         return renvoi;
     }
 
-    public void setRenvoi(String s){
-        renvoi = s ;
-    }
 
 }

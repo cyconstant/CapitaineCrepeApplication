@@ -87,7 +87,7 @@ public class CuisineActivity extends AppCompatActivity {
             } else if (requete.equalsIgnoreCase("AJOUT ")) {
                 // if (!quantiteEtNomDuPlat.equals("")) {
                if (fragQuantite.ajoutDeCrepe()) {
-                   mService.sendMessage("AJOUT " + quantiteEtNomDuPlat);
+               //    mService.sendMessage("AJOUT " + quantiteEtNomDuPlat);
                    mService.sendMessage("AJOUT " + fragQuantite.getRenvoi());
                    retourServeur = mService.readLine();
                    fragQuantite.resetajoutDeCrepe();
@@ -218,8 +218,8 @@ public class CuisineActivity extends AppCompatActivity {
     }
 
     public void validerAjout(View v) {
-        // quantiteEtNomDuPlat = nomDuPlatAAjouter.getText().toString();
-        if (!quantiteEtNomDuPlat.equals("") && quantiteEtNomDuPlat.length() > 2) {
+         quantiteEtNomDuPlat = nomDuPlatAAjouter.getText().toString();
+            if (!quantiteEtNomDuPlat.equals("") && quantiteEtNomDuPlat.length() > 2) {
             /* ajouter le plat */
             ReadMessages readMessagesQuantite = new ReadMessages();
             readMessagesQuantite.execute("AJOUT ");
