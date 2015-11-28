@@ -16,13 +16,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/layout_fragment_quantite" />
 
-    <EditText
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/layout_fragment_quantite"
         android:ems="10"
-        android:id="@+id/nomDuPlatAAjouter"
-        android:hint="@string/QtenomDuPlatAAjouter" />
+        android:id="@+id/nomDuPlatAAjouter"/>
 
     <Button
         android:layout_width="wrap_content"

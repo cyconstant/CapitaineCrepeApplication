@@ -15,13 +15,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class CuisineActivity extends AppCompatActivity {
 
     private InformationFragment fragInfo;
     private QuantiteActivityFragment fragQuantite;
     private FragmentManager fragmentManager;
-    private EditText nomDuPlatAAjouter;
+    private TextView nomDuPlatAAjouter;
     private String quantiteEtNomDuPlat = "";
     private String listeDesPlats = "";
     private String retourServeur = "";
@@ -84,9 +85,12 @@ public class CuisineActivity extends AppCompatActivity {
                 }
             /* Ajouter un plat */
             } else if (requete.equalsIgnoreCase("AJOUT ")) {
-                if (!quantiteEtNomDuPlat.equals("")) {
-                    mService.sendMessage("AJOUT " + quantiteEtNomDuPlat);
-                    retourServeur = mService.readLine();
+                // if (!quantiteEtNomDuPlat.equals("")) {
+               if (fragQuantite.ajoutDeCrepe()) {
+                   mService.sendMessage("AJOUT " + quantiteEtNomDuPlat);
+                   mService.sendMessage("AJOUT " + fragQuantite.getRenvoi());
+                   retourServeur = mService.readLine();
+                   fragQuantite.resetajoutDeCrepe();
                 }
             }
 
@@ -118,7 +122,7 @@ public class CuisineActivity extends AppCompatActivity {
 
         System.out.println("CuisineActivity.onCreate");
         doBindService();
-        nomDuPlatAAjouter = (EditText) findViewById(R.id.nomDuPlatAAjouter);
+        nomDuPlatAAjouter = (TextView) findViewById(R.id.nomDuPlatAAjouter);
 
         ReadMessages readMessages = new ReadMessages();
         readMessages.execute("QUANTITE");
@@ -214,7 +218,7 @@ public class CuisineActivity extends AppCompatActivity {
     }
 
     public void validerAjout(View v) {
-        quantiteEtNomDuPlat = nomDuPlatAAjouter.getText().toString();
+        // quantiteEtNomDuPlat = nomDuPlatAAjouter.getText().toString();
         if (!quantiteEtNomDuPlat.equals("") && quantiteEtNomDuPlat.length() > 2) {
             /* ajouter le plat */
             ReadMessages readMessagesQuantite = new ReadMessages();
