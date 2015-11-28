@@ -24,7 +24,7 @@ public class CommandeActivity extends AppCompatActivity {
     private TextView nomDuPlatACommander;
     private ReadMessages readMessages;
     private String listeDesPlats = "";
-    String retourServeur = "";
+    private String retourServeur = "";
 
     private SocketService mService;
     private boolean mBound = false;
@@ -81,7 +81,7 @@ public class CommandeActivity extends AppCompatActivity {
             if (requete.equalsIgnoreCase("LISTE")) {
                 String message;
                 mService.sendMessage("LISTE");
-                /* lire la 1ere ligne */
+                /* lire la 1ere ligne "Liste des plats (non epuises)" */
                 mService.readLine();
                 /* lire la liste des plats */
                 while (!((message = mService.readLine()).equals("FINLISTE"))) {
