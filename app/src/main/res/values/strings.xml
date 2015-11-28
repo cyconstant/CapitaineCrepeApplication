@@ -28,4 +28,8 @@
     <string name="image_capitaine">image_capitaine</string>
     <string name="title_activity_plats_dispo">PlatsDispoActivity</string>
 
+    <color name="fushia">#D28AC6</color>
+    <color name="blue">#BCF2F6</color>
+    <color name="beige">#EFECCA</color>
+
 </resources>

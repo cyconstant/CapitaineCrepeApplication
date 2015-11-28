@@ -75,7 +75,6 @@ public class CommandeActivity extends AppCompatActivity {
                 SystemClock.sleep(100);
                 System.out.println("mService=" + mService);
             }
-            System.out.println("mService=" + mService);
 
             /* Demander les plats disponibles */
             if (requete.equalsIgnoreCase("LISTE")) {
