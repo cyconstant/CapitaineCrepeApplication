@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 public class CuisineActivity extends AppCompatActivity {
@@ -23,7 +22,6 @@ public class CuisineActivity extends AppCompatActivity {
     private QuantiteActivityFragment fragQuantite;
     private FragmentManager fragmentManager;
     private TextView nomDuPlatAAjouter;
-    private String quantiteEtNomDuPlat = "";
     private String listeDesPlats = "";
     private String retourServeur = "";
 
@@ -85,15 +83,12 @@ public class CuisineActivity extends AppCompatActivity {
                 }
             /* Ajouter un plat */
             } else if (requete.equalsIgnoreCase("AJOUT ")) {
-                // if (!quantiteEtNomDuPlat.equals("")) {
                if (fragQuantite.ajoutDeCrepe()) {
-               //    mService.sendMessage("AJOUT " + quantiteEtNomDuPlat);
                    mService.sendMessage("AJOUT " + fragQuantite.getRenvoi());
                    retourServeur = mService.readLine();
-                   fragQuantite.resetajoutDeCrepe();
+                   fragQuantite.resetAjoutDeCrepe();
                 }
             }
-
             return requete;
         }
 
@@ -153,7 +148,6 @@ public class CuisineActivity extends AppCompatActivity {
         } else {
             System.out.println("Recup du fragment fragment fragQuantite");
         }
-
 
     }
 
@@ -218,7 +212,7 @@ public class CuisineActivity extends AppCompatActivity {
     }
 
     public void validerAjout(View v) {
-         quantiteEtNomDuPlat = nomDuPlatAAjouter.getText().toString();
+         String quantiteEtNomDuPlat = nomDuPlatAAjouter.getText().toString();
             if (!quantiteEtNomDuPlat.equals("") && quantiteEtNomDuPlat.length() > 2) {
             /* ajouter le plat */
             ReadMessages readMessagesQuantite = new ReadMessages();
@@ -229,6 +223,9 @@ public class CuisineActivity extends AppCompatActivity {
             listeDesPlats = "";
             ReadMessages readMessages = new ReadMessages();
             readMessages.execute("QUANTITE");
+
         }
+        // mise a jour compteur du fragment :
+        fragQuantite.setCompteurDeClics(0);
     }
 }

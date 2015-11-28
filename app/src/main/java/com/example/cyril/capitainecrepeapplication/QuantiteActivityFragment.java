@@ -2,7 +2,6 @@ package com.example.cyril.capitainecrepeapplication;
 
 //import android.support.v4.app.Fragment;
 
-import android.app.Fragment;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,14 +16,10 @@ import android.widget.TextView;
  */
 public class QuantiteActivityFragment extends ListFragment {
 
-    private TextView quantitePlatFrag ;
     private String quantitePlats = "";
     private String listeNomString = "";
-
-    private String[] listeQuantiteNom = new String[40];
     private String[] listeNom = new String[40];
     private String renvoi;
-    private String lePlatAAjouter;
     private boolean ajoutDeCrepe = false;
     private int tailleTableauQuantiteNom ;
     private int compteurDeClics;
@@ -44,33 +39,29 @@ public class QuantiteActivityFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_quantite, container, false);
-        //textViewQuantite = (TextView) v.findViewById(R.id.textViewQuantite);
-        //textViewQuantite.setText("");
         afficherPlatsDispo(quantitePlats);
         return v;
     }
 
     public void afficherPlatsDispo(String newQuantity) {
         String[] separated = newQuantity.split("\n");
-        //quantitePlats = separated[0] + "\n";
-        //quantitePlats = "Quantite disponible : " + "\n";
-        // on met sur une seule ligne le nom et la quantite.
-        //int j = 0;
+
         for (int i = 1; i < separated.length - 1; i += 2) {
+            // String avec Quantite et Nom pour Affichage
             quantitePlats += " " + separated[i+1] + " " + separated[i] + "\n";
+            // String avec le nom seul pour Ajout
             listeNomString += separated[i] + "\n";
-            // on liste les noms seuls
-            //listeNom[j] = separated[i];
-            //j++;
         }
-        listeQuantiteNom = null;
+        String[] listeQuantiteNom ;
         listeNom = null;
+
         listeQuantiteNom = quantitePlats.split("\n");
         listeNom = listeNomString.split("\n");
-        // on peut afficher la liste
-        // textViewQuantite.setText(quantitePlats);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.mylist, listeQuantiteNom);
+        quantitePlats = "";
+        listeNomString = "";
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.mylist, listeQuantiteNom);
         tailleTableauQuantiteNom = listeQuantiteNom.length;
         setListAdapter(adapter);
     }
@@ -78,14 +69,15 @@ public class QuantiteActivityFragment extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
     }
 
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+
+        TextView quantitePlatFrag = (TextView) getActivity().findViewById(R.id.nomDuPlatAAjouter);
+
         System.out.println("clic sur element de la liste : ");
-        String selection = l.getItemAtPosition(position).toString();
         if ( dernierElementClique == position || dernierElementClique == 1000) {
             dernierElementClique = position;
             compteurDeClics++;
@@ -98,20 +90,9 @@ public class QuantiteActivityFragment extends ListFragment {
             quantitePlatFrag.setText("renvoi");
         }
 
-        System.out.println(renvoi);
-        quantitePlatFrag = (TextView) getActivity().findViewById(R.id.nomDuPlatAAjouter);
-
-        //if (position == 0){
-        //    lePlatACommander = "";
-        //    lePlatFrag.setText("");
-        //}
-
         if (position >= 0 && position <= tailleTableauQuantiteNom) {
-            lePlatAAjouter = "";
-            lePlatAAjouter = renvoi;
-            quantitePlatFrag.setText(lePlatAAjouter);
+            quantitePlatFrag.setText(renvoi);
             ajoutDeCrepe = true ;
-            System.out.println("lePlatAAjouter : " + lePlatAAjouter);
         }
         super.onListItemClick(l, v, position, id);
     }
@@ -120,7 +101,7 @@ public class QuantiteActivityFragment extends ListFragment {
         return ajoutDeCrepe;
     }
 
-    public void resetajoutDeCrepe(){
+    public void resetAjoutDeCrepe(){
         ajoutDeCrepe = false;
     }
 
@@ -128,5 +109,8 @@ public class QuantiteActivityFragment extends ListFragment {
         return renvoi;
     }
 
+    public void setCompteurDeClics(int i){
+        compteurDeClics = i;
+    }
 
 }
