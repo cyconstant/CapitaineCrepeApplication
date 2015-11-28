@@ -46,8 +46,8 @@ public class PlatsDispoActivityFragment extends ListFragment {
     public void afficherPlatsDispo(String platsDispo) {
         this.platsDispo = platsDispo;
         String values[] = platsDispo.split("\n");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_list_item_1, values);
+        //ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_list_item_1, values);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.mylist, values);
         tailleTableauValues = values.length;
         setListAdapter(adapter);
     }
