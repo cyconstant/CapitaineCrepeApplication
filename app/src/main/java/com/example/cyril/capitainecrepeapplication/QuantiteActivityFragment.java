@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -19,8 +18,8 @@ public class QuantiteActivityFragment extends ListFragment {
     private String quantitePlats = "";
     private String listeNomString = "";
     private String[] listeNom = new String[40];
-    private String renvoi;
-    private boolean ajoutDeCrepe = false;
+    //private String renvoi;
+    //private boolean ajoutDeCrepe = false;
     private int tailleTableauQuantiteNom ;
     private int compteurDeClics;
     private int dernierElementClique = 1000;
@@ -40,6 +39,7 @@ public class QuantiteActivityFragment extends ListFragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_quantite, container, false);
         afficherPlatsDispo(quantitePlats);
+
         return v;
     }
 
@@ -74,9 +74,9 @@ public class QuantiteActivityFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-
-        TextView quantitePlatFrag = (TextView) getActivity().findViewById(R.id.nomDuPlatAAjouter);
-
+        String renvoi;
+        //EditText quantitePlatFrag = (EditText) getActivity().findViewById(R.id.nomDuPlatAAjouter);
+        CuisineActivity activity = (CuisineActivity) getActivity();
         System.out.println("clic sur element de la liste : ");
         if ( dernierElementClique == position || dernierElementClique == 1000) {
             dernierElementClique = position;
@@ -87,27 +87,33 @@ public class QuantiteActivityFragment extends ListFragment {
             compteurDeClics = 1;
             renvoi = Integer.toString(compteurDeClics)+" "+listeNom[position];
             dernierElementClique = position;
-            quantitePlatFrag.setText("renvoi");
+            //quantitePlatFrag.setText(renvoi);
+            activity.setNomDuPlatAAjouter(renvoi);
         }
 
         if (position >= 0 && position <= tailleTableauQuantiteNom) {
-            quantitePlatFrag.setText(renvoi);
-            ajoutDeCrepe = true ;
+            //quantitePlatFrag.setText(renvoi);
+            activity.setNomDuPlatAAjouter(renvoi);
+            //ajoutDeCrepe = true ;
         }
         super.onListItemClick(l, v, position, id);
     }
 
-    public boolean ajoutDeCrepe(){
+    /*public boolean ajoutDeCrepe(){
         return ajoutDeCrepe;
     }
 
     public void resetAjoutDeCrepe(){
         ajoutDeCrepe = false;
-    }
+    }*/
 
-    public String getRenvoi(){
-        return renvoi;
-    }
+
+
+    /*public String getRenvoi(){
+        // return renvoi;
+        CuisineActivity activity = (CuisineActivity) getActivity();
+        return activity.getNomDuPlatAAjouter();
+    }*/
 
     public void setCompteurDeClics(int i){
         compteurDeClics = i;

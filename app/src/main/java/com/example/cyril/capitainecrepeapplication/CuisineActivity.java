@@ -14,19 +14,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.EditText;
 
 public class CuisineActivity extends AppCompatActivity {
 
     private InformationFragment fragInfo;
     private QuantiteActivityFragment fragQuantite;
     private FragmentManager fragmentManager;
-    private TextView nomDuPlatAAjouter;
+
+    private EditText nomDuPlatAAjouter;
     private String listeDesPlats = "";
     private String retourServeur = "";
 
     SocketService mService;
     boolean mBound = false;
+
+    public String getNomDuPlatAAjouter() {
+        return nomDuPlatAAjouter.getText().toString();
+    }
+
+    public void setNomDuPlatAAjouter(String quantiteEtNom) {
+        nomDuPlatAAjouter.setText(quantiteEtNom);
+    }
 
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -83,11 +92,14 @@ public class CuisineActivity extends AppCompatActivity {
                 }
             /* Ajouter un plat */
             } else if (requete.equalsIgnoreCase("AJOUT ")) {
-               if (fragQuantite.ajoutDeCrepe()) {
-                   mService.sendMessage("AJOUT " + fragQuantite.getRenvoi());
+                //if (fragQuantite.ajoutDeCrepe()) {
+                //mService.sendMessage("AJOUT " + fragQuantite.getRenvoi());
+                String plat = getNomDuPlatAAjouter();
+                mService.sendMessage("AJOUT " + plat);
                    retourServeur = mService.readLine();
-                   fragQuantite.resetAjoutDeCrepe();
-                }
+
+                //fragQuantite.resetAjoutDeCrepe();
+                //}
             }
             return requete;
         }
@@ -106,6 +118,7 @@ public class CuisineActivity extends AppCompatActivity {
             fragQuantite.afficherPlatsDispo(listeDesPlats);
         } else if (requete.equalsIgnoreCase("AJOUT ")) {
             fragInfo.afficherInformation(retourServeur);
+            setNomDuPlatAAjouter("");
         }
     }
 
@@ -117,7 +130,7 @@ public class CuisineActivity extends AppCompatActivity {
 
         System.out.println("CuisineActivity.onCreate");
         doBindService();
-        nomDuPlatAAjouter = (TextView) findViewById(R.id.nomDuPlatAAjouter);
+        nomDuPlatAAjouter = (EditText) findViewById(R.id.nomDuPlatAAjouter);
 
         ReadMessages readMessages = new ReadMessages();
         readMessages.execute("QUANTITE");
@@ -212,12 +225,12 @@ public class CuisineActivity extends AppCompatActivity {
     }
 
     public void validerAjout(View v) {
-         String quantiteEtNomDuPlat = nomDuPlatAAjouter.getText().toString();
-            if (!quantiteEtNomDuPlat.equals("") && quantiteEtNomDuPlat.length() > 2) {
+        //String quantiteEtNomDuPlat = nomDuPlatAAjouter.getText().toString();
+        if (!getNomDuPlatAAjouter().equals("") && getNomDuPlatAAjouter().length() > 2) {
             /* ajouter le plat */
             ReadMessages readMessagesQuantite = new ReadMessages();
             readMessagesQuantite.execute("AJOUT ");
-            nomDuPlatAAjouter.setText("");
+            //nomDuPlatAAjouter.setText("");
 
             /* mettre a jour les quantites */
             listeDesPlats = "";
