@@ -22,7 +22,8 @@
         android:layout_below="@id/layout_fragment_quantite"
         android:ems="10"
         android:background="@color/beige"
-        android:id="@+id/nomDuPlatAAjouter"/>
+        android:id="@+id/nomDuPlatAAjouter"
+        android:hint="@string/QtenomDuPlatAAjouter" />
 
     <Button
         android:layout_width="wrap_content"
